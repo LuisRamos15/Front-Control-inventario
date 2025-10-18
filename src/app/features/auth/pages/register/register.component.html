@@ -1,0 +1,75 @@
+<div class="auth-bg">
+
+<mat-card class="auth-card">
+
+<mat-card-header class="logo">
+
+<mat-icon>person_add</mat-icon>
+
+<div>
+
+<h1>Crear cuenta</h1>
+
+<small>InventarioPRO</small>
+
+</div>
+
+</mat-card-header>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+<mat-form-field appearance="outline" class="w100">
+
+<mat-label>Usuario</mat-label>
+
+<input matInput formControlName="nombreUsuario" autocomplete="username" />
+
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="w100">
+
+<mat-label>Contraseña</mat-label>
+
+<input matInput [type]="hide ? 'password' : 'text'" formControlName="password" autocomplete="new-password" />
+
+<button type="button" mat-icon-button matSuffix (click)="hide = !hide">
+
+<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+
+</button>
+
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="w100">
+
+<mat-label>Rol</mat-label>
+
+<mat-select formControlName="rol">
+
+<mat-option value="ADMIN">Admin</mat-option>
+
+<mat-option value="SUPERVISOR">Supervisor</mat-option>
+
+<mat-option value="OPERADOR">Operador</mat-option>
+
+</mat-select>
+
+</mat-form-field>
+
+<button mat-raised-button color="primary" class="w100" [disabled]="form.invalid || loading">
+
+<mat-icon>how_to_reg</mat-icon>&nbsp; {{ loading ? 'Creando...' : 'Registrar' }}
+
+</button>
+
+</form>
+
+<div class="links">
+
+<a routerLink="/login">¿Ya tienes cuenta? Inicia sesión</a>
+
+</div>
+
+</mat-card>
+
+</div>

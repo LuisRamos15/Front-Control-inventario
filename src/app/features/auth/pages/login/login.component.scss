@@ -1,0 +1,35 @@
+.auth-bg {
+
+min-height: calc(100vh - 64px);
+
+display: grid;
+
+place-items: center;
+
+background: #0f6bdc1a; // leve azul
+
+}
+
+.auth-card {
+
+width: 360px; padding: 16px 18px 20px;
+
+}
+
+.logo {
+
+display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+
+mat-icon { font-size: 36px; height: 36px; width: 36px; color: #1976d2; }
+
+h1 { margin: 0; font-size: 20px; }
+
+small { opacity: .75; }
+
+}
+
+.w100 { width: 100%; }
+
+.links { margin-top: 8px; text-align: right; }
+
+.roles { margin-top: 6px; opacity: .6; font-size: 12px; text-align: center; }
