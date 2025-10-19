@@ -1,12 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 import { NgClass } from '@angular/common';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   standalone: true,
   selector: 'app-protected-shell',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
+  <div class="app-header">
+    <div class="user-menu">
+      <button class="user-btn" (click)="toggleMenu()" aria-label="User menu">
+        Admin ▾
+      </button>
+      <div class="dropdown" [class.show]="menuOpen">
+        <a class="dropdown-item" routerLink="/perfil">Perfil</a>
+        <hr class="dropdown-divider">
+        <a class="dropdown-item text-danger" (click)="logout()">Cerrar sesión</a>
+      </div>
+    </div>
+  </div>
   <div class="shell">
     <aside class="sidebar">
       <div class="brand">
@@ -48,8 +61,17 @@ import { NgClass } from '@angular/common';
   </div>
   `,
   styles: [`
-  :host, .shell { display: block; height: 100vh; }
-  .shell { display: grid; grid-template-columns: 260px 1fr; background: #f6f8ff; }
+  :host { display: block; height: 100vh; }
+  .app-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 8px 22px; display: flex; justify-content: flex-end; align-items: center; }
+  .user-btn { background: #eef2ff; color: #0d47a1; padding: 6px 10px; border-radius: 10px; font-size: 12px; border: none; cursor: pointer; }
+  .dropdown { position: absolute; top: 40px; right: 22px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,.1); display: none; min-width: 150px; z-index: 1000; }
+  .dropdown.show { display: block; }
+  .dropdown-item { display: block; padding: 8px 12px; color: #333; text-decoration: none; }
+  .dropdown-item:hover { background: #f5f5f5; }
+  .dropdown-item.text-danger { color: #dc3545; }
+  .dropdown-divider { margin: 0; border-top: 1px solid #e0e0e0; }
+
+  .shell { display: grid; grid-template-columns: 260px 1fr; background: #f6f8ff; height: calc(100vh - 50px); }
   .sidebar {
     background: linear-gradient(180deg, #0d47a1, #0b4192);
     color: #fff; padding: 16px 12px; display: flex; flex-direction: column; gap: 16px;
@@ -72,4 +94,17 @@ import { NgClass } from '@angular/common';
   .content { padding: 22px; overflow:auto; }
   `]
 })
-export class ProtectedShellComponent {}
+export class ProtectedShellComponent {
+  menuOpen = false;
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  logout() {
+    this.auth.clearToken();
+    this.router.navigate(['/login']);
+  }
+}
