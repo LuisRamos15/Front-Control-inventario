@@ -1,10 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
-import { AlertsService, AlertaRes } from '../../core/services/alerts.service';
+
 import { AuthService } from '../../core/services/auth.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
+import { AlertaEvent } from './models/alerta.model';
+import { catchError, of } from 'rxjs';
 
 Chart.register(...registerables);
 
@@ -74,11 +76,11 @@ Chart.register(...registerables);
 
       <div class="card alerts" *ngIf="isAdmin">
         <div class="card-title">Alertas Recientes</div>
-        <div *ngIf="loadingAlertas" class="alert-row info">Cargando alertas...</div>
-        <div *ngFor="let a of alerts()" class="alert-row" [ngClass]="a.nivel === 'danger' ? 'warn' : a.nivel === 'warning' ? 'low' : 'info'">
-          {{a.titulo}} • {{a.detalle}}
+        <div *ngIf="cargandoAlertas" class="alert-row info">Cargando alertas...</div>
+        <div *ngFor="let a of alertas" class="alert-row" [ngClass]="a.nivel === 'STOCK_CRITICO' ? 'warn' : 'low'">
+          <strong>{{a.mensaje}}</strong> {{a.productoNombre}} ({{a.sku}}) - Stock: {{a.stock}} / Mínimo: {{a.minimo}}
         </div>
-        <div *ngIf="!loadingAlertas && alerts().length === 0" class="alert-row info">Sin alertas recientes.</div>
+        <div *ngIf="!cargandoAlertas && alertas.length === 0" class="alert-row info">Sin alertas recientes.</div>
       </div>
 
   </div>
@@ -117,18 +119,18 @@ Chart.register(...registerables);
   .alerts .info { background:#e3f2fd; color:#1565c0; }
   `]
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   private resumenSig = signal<Resumen | null>(null);
   resumen = () => this.resumenSig();
 
   private topSig = signal<TopProducto[]>([]);
   top = () => this.topSig();
 
-  private alertsSig = signal<AlertaRes[]>([]);
-  alerts = () => this.alertsSig();
-
   isAdmin = false;
   loadingAlertas = false;
+
+  alertas: AlertaEvent[] = [];
+  cargandoAlertas = false;
 
   barType: ChartType = 'bar';
   barData: ChartConfiguration['data'] = { labels: [], datasets: [] };
@@ -139,9 +141,15 @@ export class DashboardComponent {
     scales: { x: { stacked: false }, y: { beginAtZero: true } }
   };
 
-  constructor(private api: DashboardService, private alertsApi: AlertsService, private auth: AuthService) {
-    this.isAdmin = this.auth.getPrimaryRole() === 'ADMIN';
+  constructor(private api: DashboardService, private auth: AuthService) {
     this.cargar();
+  }
+
+  ngOnInit(): void {
+    this.isAdmin = this.auth.getPrimaryRole() === 'ADMIN';
+    if (this.isAdmin) {
+      this.cargarAlertas();
+    }
   }
 
   private cargar() {
@@ -164,19 +172,21 @@ export class DashboardComponent {
     });
 
     this.api.topProductos('SALIDA', 5, desde, hasta).subscribe((t: TopProducto[]) => this.topSig.set(t));
+  }
 
-    if (this.isAdmin) {
-      this.loadingAlertas = true;
-      this.alertsApi.recientes().subscribe({
-        next: (a: AlertaRes[]) => {
-          this.alertsSig.set(a);
-          this.loadingAlertas = false;
-        },
-        error: () => {
-          this.alertsSig.set([]);
-          this.loadingAlertas = false;
+  private cargarAlertas(): void {
+    this.cargandoAlertas = true;
+    this.api.getAlertas(10).pipe(
+      catchError(err => {
+        if (err?.status === 403) {
+          this.isAdmin = false;
+          return of<AlertaEvent[]>([]);
         }
-      });
-    }
+        return of<AlertaEvent[]>([]);
+      })
+    ).subscribe(list => {
+      this.alertas = list ?? [];
+      this.cargandoAlertas = false;
+    });
   }
 }

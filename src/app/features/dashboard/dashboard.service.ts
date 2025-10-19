@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { AlertaEvent } from './models/alerta.model';
 
 export interface Resumen {
   totalProductos: number;
@@ -33,5 +34,10 @@ export class DashboardService {
     if (desde) params = params.set('desde', desde);
     if (hasta) params = params.set('hasta', hasta);
     return this.http.get<TopProducto[]>(`${this.base}/top-productos`, { params });
+  }
+
+  getAlertas(limit = 10) {
+    const params = new HttpParams().set('limit', limit);
+    return this.http.get<AlertaEvent[]>(`${this.base}/alertas`, { params });
   }
 }
