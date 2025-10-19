@@ -13,15 +13,16 @@ import { AuthService } from '../../services/auth.service';
 export class HeaderComponent {
   open = false;
   private router = inject(Router);
-  private auth = inject(AuthService);
+  public auth = inject(AuthService);
 
   toggle() { this.open = !this.open; }
 
   close() { this.open = false; }
 
-  logout() {
-    this.auth.clear();
-    this.close();
-    this.router.navigate(['/login'], { replaceUrl: true });
-  }
+   logout() {
+     this.auth.clear();
+     this.auth.refreshFromToken();
+     this.close();
+     this.router.navigate(['/login'], { replaceUrl: true });
+   }
 }

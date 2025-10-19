@@ -50,10 +50,11 @@ password: ['', [Validators.required, Validators.minLength(8)]],
     if (this.form.invalid) return;
     this.loading = true;
      this.auth.login(this.form.value as LoginReq).subscribe({
-       next: (res) => {
-          this.auth.setToken(res.token);
-          this.router.navigateByUrl('/dashboard');
-       },
+        next: (res) => {
+           this.auth.setToken(res.token);
+           this.auth.refreshFromToken();
+           this.router.navigateByUrl('/dashboard');
+        },
        error: (err) => {
          const msg = humanizeAuthMessage(err);
          this.sb.open(msg, 'Cerrar', { duration: 2500 });

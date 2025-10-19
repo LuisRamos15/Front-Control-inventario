@@ -79,12 +79,13 @@ Chart.register(...registerables);
 
   </div>
   `,
-  styles: [`
-  .page { display:flex; flex-direction:column; gap:16px; }
-  .title-row { display:flex; align-items:center; gap:12px; }
-  .title { font-size:20px; font-weight:700; }
-  .status { margin-left:auto; background:#e8f5e9; color:#2e7d32; padding:6px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; gap:6px; }
-  .status .dot { width:8px; height:8px; border-radius:50%; background:#2ecc71; display:inline-block; }
+   styles: [`
+   .page { display:flex; flex-direction:column; gap:16px; }
+   .title-row { display:flex; align-items:center; gap:12px; }
+   .title-row .status { display: none; }
+   .title { font-size:20px; font-weight:700; }
+   .status { margin-left:auto; background:#e8f5e9; color:#2e7d32; padding:6px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; gap:6px; }
+   .status .dot { width:8px; height:8px; border-radius:50%; background:#2ecc71; display:inline-block; }
 
   .kpis { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; }
   .kpi { background:#fff; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(13,71,161,.06); display:flex; align-items:center; gap:12px; }

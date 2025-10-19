@@ -37,3 +37,5 @@ body {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:#f6f8ff; }
+
+.status-indicator:not(.main-status) { display: none; }
