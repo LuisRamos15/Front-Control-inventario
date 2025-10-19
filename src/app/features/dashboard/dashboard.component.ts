@@ -1,12 +1,13 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
-
 import { AuthService } from '../../core/services/auth.service';
+import { WebSocketService } from '../../core/services/websocket.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
 import { AlertaEvent } from './models/alerta.model';
 import { catchError, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 Chart.register(...registerables);
 
@@ -119,7 +120,7 @@ Chart.register(...registerables);
   .alerts .info { background:#e3f2fd; color:#1565c0; }
   `]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private resumenSig = signal<Resumen | null>(null);
   resumen = () => this.resumenSig();
 
@@ -132,6 +133,8 @@ export class DashboardComponent implements OnInit {
   alertas: AlertaEvent[] = [];
   cargandoAlertas = false;
 
+  private subscriptions: Subscription[] = [];
+
   barType: ChartType = 'bar';
   barData: ChartConfiguration['data'] = { labels: [], datasets: [] };
   barOptions: ChartConfiguration['options'] = {
@@ -141,7 +144,7 @@ export class DashboardComponent implements OnInit {
     scales: { x: { stacked: false }, y: { beginAtZero: true } }
   };
 
-  constructor(private api: DashboardService, private auth: AuthService) {
+  constructor(private api: DashboardService, private auth: AuthService, private websocket: WebSocketService) {
     this.cargar();
   }
 
@@ -150,6 +153,21 @@ export class DashboardComponent implements OnInit {
     if (this.isAdmin) {
       this.cargarAlertas();
     }
+
+    this.subscriptions.push(
+      this.websocket.movimientos$.subscribe(() => this.cargar())
+    );
+    this.subscriptions.push(
+      this.websocket.productos$.subscribe(() => {
+        this.cargar();
+        if (this.isAdmin) this.cargarAlertas();
+      })
+    );
+    this.subscriptions.push(
+      this.websocket.alertas$.subscribe(() => {
+        if (this.isAdmin) this.cargarAlertas();
+      })
+    );
   }
 
   private cargar() {
@@ -172,6 +190,10 @@ export class DashboardComponent implements OnInit {
     });
 
     this.api.topProductos('SALIDA', 5, desde, hasta).subscribe((t: TopProducto[]) => this.topSig.set(t));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   private cargarAlertas(): void {

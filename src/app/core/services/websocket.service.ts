@@ -11,9 +11,11 @@ export class WebSocketService {
   private client: Client;
   private alertasSubject = new Subject<any>();
   private movimientosSubject = new Subject<any>();
+  private productosSubject = new Subject<any>();
 
   public alertas$ = this.alertasSubject.asObservable();
   public movimientos$ = this.movimientosSubject.asObservable();
+  public productos$ = this.productosSubject.asObservable();
 
   constructor() {
     this.client = new Client({
@@ -33,6 +35,10 @@ export class WebSocketService {
 
       this.client.subscribe('/topic/movimientos', (message) => {
         this.movimientosSubject.next(JSON.parse(message.body));
+      });
+
+      this.client.subscribe('/topic/productos', (message) => {
+        this.productosSubject.next(JSON.parse(message.body));
       });
     };
 
