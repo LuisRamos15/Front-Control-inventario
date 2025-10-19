@@ -51,8 +51,8 @@ password: ['', [Validators.required, Validators.minLength(8)]],
     this.loading = true;
      this.auth.login(this.form.value as LoginReq).subscribe({
        next: (res) => {
-         this.auth.saveToken(res.token);
-         this.router.navigateByUrl('/ok');
+          this.auth.setToken(res.token);
+          this.router.navigateByUrl('/dashboard');
        },
        error: (err) => {
          const msg = humanizeAuthMessage(err);

@@ -1,0 +1,20 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 250px;
+  background-color: #1976d2; /* Blue color */
+}
+
+.sidenav mat-toolbar {
+  background-color: #1565c0;
+}
+
+.sidenav mat-nav-list a {
+  color: white;
+}
+
+.sidenav mat-nav-list a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

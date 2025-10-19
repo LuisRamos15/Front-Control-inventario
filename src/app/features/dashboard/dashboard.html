@@ -1,0 +1,53 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  <div class="cards" *ngIf="resumen">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Total Productos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ resumen.totalProductos }}
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Total Movimientos</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ resumen.totalMovimientos }}
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Total Entradas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ resumen.totalEntradas }}
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Total Salidas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        {{ resumen.totalSalidas }}
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="charts">
+    <div class="chart">
+      <h2>Movimientos por Día</h2>
+      <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
+    </div>
+
+    <div class="chart">
+      <h2>Top Productos (Salidas)</h2>
+      <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="pieChartType"></canvas>
+    </div>
+  </div>
+</div>

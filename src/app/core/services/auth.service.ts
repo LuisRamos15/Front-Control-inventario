@@ -1,49 +1,64 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+
 export interface LoginReq { nombreUsuario: string; password: string; }
 
 export interface LoginRes { token: string; tipo: 'Bearer'; }
 
 export interface UsuarioReq { nombreUsuario: string; password: string; roles?: string[] | null; }
 
-import { jwtDecode } from 'jwt-decode';
-
-type JwtPayload = { sub: string; roles?: string[]; exp: number; };
-
-const TOKEN_KEY = 'invpro_token';
-
 @Injectable({ providedIn: 'root' })
-
 export class AuthService {
+  private readonly KEY = 'token';
 
-private base = '/api/auth';
+  constructor(private http: HttpClient) {}
 
-constructor(private http: HttpClient) {}
+  private base = '/api/auth';
 
-login(body: LoginReq) { return this.http.post<LoginRes>(`${this.base}/login`, body); }
+  login(body: LoginReq) { return this.http.post<LoginRes>(`${this.base}/login`, body); }
 
-registro(body: UsuarioReq) { return this.http.post(`${this.base}/registro`, body); }
+  registro(body: UsuarioReq) { return this.http.post(`${this.base}/registro`, body); }
 
-saveToken(t: string) { localStorage.setItem(TOKEN_KEY, t); }
+  getToken(): string | null {
+    const t = localStorage.getItem(this.KEY);
+    // Rechaza falsos positivos (ej: "true", "1", "ok")
+    if (!t || t.length < 20 || !t.includes('.')) return null; // los JWT tienen puntos
+    return t;
+  }
 
-logout() { localStorage.removeItem(TOKEN_KEY); }
+  setToken(token: string) {
+    localStorage.setItem(this.KEY, token);
+  }
 
-get token() { return localStorage.getItem(TOKEN_KEY); }
+  clearToken() {
+    localStorage.removeItem(this.KEY);
+  }
 
-get isLoggedIn(): boolean {
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
 
-const t = this.token; if (!t) return false;
+  // Mantén compatibilidad con código existente
+  get token() { return this.getToken(); }
+  saveToken(t: string) { this.setToken(t); }
+  logout() { this.clearToken(); }
 
-try { return (jwtDecode<JwtPayload>(t).exp * 1000) > Date.now(); } catch { return false; }
+  // Mantén isLoggedIn y roles si se usan
+  get isLoggedIn(): boolean {
+    const t = this.getToken();
+    if (!t) return false;
+    try {
+      const payload = JSON.parse(atob(t.split('.')[1]));
+      return (payload.exp * 1000) > Date.now();
+    } catch { return false; }
+  }
 
-}
-
-get roles(): string[] {
-
-const t = this.token; if (!t) return [];
-
-try { return jwtDecode<JwtPayload>(t).roles ?? []; } catch { return []; }
-
-}
-
+  get roles(): string[] {
+    const t = this.getToken();
+    if (!t) return [];
+    try {
+      const payload = JSON.parse(atob(t.split('.')[1]));
+      return payload.roles ?? [];
+    } catch { return []; }
+  }
 }

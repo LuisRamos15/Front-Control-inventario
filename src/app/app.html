@@ -1,15 +1,1 @@
-<ng-container *ngIf="!router.url.includes('/login') && !router.url.includes('/register')">
-  <mat-toolbar color="primary">
-    InventarioPRO
-    <span style="flex: 1 1 auto"></span>
-    <a mat-button routerLink="/dashboard">Dashboard</a>
-    <a mat-button routerLink="/inventario">Inventario</a>
-    <a mat-button routerLink="/movimientos">Movimientos</a>
-    <a mat-button routerLink="/alertas">Alertas</a>
-    <a mat-button routerLink="/reportes">Reportes</a>
-  </mat-toolbar>
-</ng-container>
-
-<div style="padding:16px">
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
