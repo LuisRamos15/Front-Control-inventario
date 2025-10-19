@@ -104,7 +104,7 @@ export class ProtectedShellComponent {
   }
 
   logout() {
-    this.auth.clearToken();
-    this.router.navigate(['/login']);
+    this.auth.clear();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 }

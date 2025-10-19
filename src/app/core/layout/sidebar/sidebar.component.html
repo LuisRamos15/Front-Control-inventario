@@ -1,0 +1,43 @@
+<aside class="sidebar">
+  <!-- Logo / Marca -->
+  <div class="brand">
+    <div class="cube">
+      <span class="dot"></span>
+    </div>
+    <div class="brand-text">
+      <div class="title">InventarioPRO</div>
+      <div class="subtitle">Sistema Inteligente</div>
+    </div>
+  </div>
+
+  <!-- Chips -->
+  <div class="chips">
+    <span class="chip">Angular</span>
+    <span class="chip">Spring Boot</span>
+    <span class="chip">MongoDB</span>
+  </div>
+
+  <!-- Menú -->
+  <nav class="menu">
+    <a routerLink="/dashboard" routerLinkActive="active" class="item" [routerLinkActiveOptions]="{ exact: true }">
+      <span class="icon"></span>
+      <span class="label">Dashboard</span>
+    </a>
+    <a routerLink="/inventario" routerLinkActive="active" class="item">
+      <span class="icon"></span>
+      <span class="label">Inventario</span>
+    </a>
+    <a routerLink="/movimientos" routerLinkActive="active" class="item">
+      <span class="icon"></span>
+      <span class="label">Movimientos</span>
+    </a>
+    <a routerLink="/alertas" routerLinkActive="active" class="item">
+      <span class="icon"></span>
+      <span class="label">Alertas</span>
+    </a>
+    <a routerLink="/reportes" routerLinkActive="active" class="item">
+      <span class="icon"></span>
+      <span class="label">Reportes</span>
+    </a>
+  </nav>
+</aside>

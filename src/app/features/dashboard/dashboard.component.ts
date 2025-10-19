@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { DashboardService, Resumen, TopProducto } from './dashboard.service';
+import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
 
@@ -133,12 +133,15 @@ export class DashboardComponent {
   }
 
   private cargar() {
-    this.api.resumen().subscribe(r => this.resumenSig.set(r));
+    this.api.resumen().subscribe((r: Resumen) => this.resumenSig.set(r));
 
-    this.api.movimientosPorDia().subscribe(rows => {
-      const labels = rows.map(r => r.fecha);
-      const entradas = rows.map(r => r.entradas);
-      const salidas = rows.map(r => r.salidas);
+    const hoy = new Date();
+    const desde = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const hasta = hoy.toISOString().split('T')[0];
+    this.api.movimientosPorDia(desde, hasta).subscribe((rows: DiaMov[]) => {
+      const labels = rows.map((r: DiaMov) => r.fecha);
+      const entradas = rows.map((r: DiaMov) => r.entradas);
+      const salidas = rows.map((r: DiaMov) => r.salidas);
       this.barData = {
         labels,
         datasets: [
@@ -148,6 +151,6 @@ export class DashboardComponent {
       };
     });
 
-    this.api.topProductos('SALIDA', 5).subscribe(t => this.topSig.set(t));
+    this.api.topProductos('SALIDA', 5, desde, hasta).subscribe((t: TopProducto[]) => this.topSig.set(t));
   }
 }

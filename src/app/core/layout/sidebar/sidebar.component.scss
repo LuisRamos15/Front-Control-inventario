@@ -1,0 +1,75 @@
+:host { display: block; }
+
+.sidebar {
+  width: 210px;
+  min-width: 210px;
+  background: linear-gradient(180deg, #0f4fb3 0%, #0d3f8f 100%);
+  color: #eaf1ff;
+  height: 100%;
+  padding: 16px 12px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 8px 6px;
+}
+
+.cube {
+  width: 54px; height: 54px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  position: relative;
+  box-shadow: inset 0 0 12px rgba(0,0,0,.15);
+}
+
+.cube .dot {
+  position: absolute; width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; top: 10px; left: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,.2);
+}
+
+.brand-text .title {
+  font-weight: 700; letter-spacing: .3px; font-size: 16px;
+}
+
+.brand-text .subtitle {
+  margin-top: 2px;
+  font-size: 12px; opacity: .8;
+}
+
+.chips {
+  display: flex; gap: 8px; margin-bottom: 14px; padding: 0 4px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 6px 10px; font-size: 12px; border-radius: 10px;
+  background: rgba(255,255,255,.08); color: #eaf1ff;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.menu { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+.menu .item {
+  color: #eaf1ff; text-decoration: none; padding: 10px 12px; border-radius: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.menu .item:hover { background: rgba(255,255,255,.08); }
+
+.menu .item.active { background: #1f74ff; }
+
+.icon { width: 18px; text-align: center; }
+
+@media (max-width: 1024px) {
+  .sidebar { width: 200px; min-width: 200px; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+}

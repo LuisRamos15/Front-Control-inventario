@@ -1,15 +1,14 @@
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { CanActivateFn, CanMatchFn, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-function checkAuth(): true | UrlTree {
-  const router = inject(Router);
+export const AuthGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
+  const router = inject(Router);
   const token = auth.getToken();
-  // DEBUG temporal (puedes quitarlo luego):
-  console.log('[AuthGuard] token =', token);
-  return token ? true : router.parseUrl('/login');
-}
-
-export const AuthGuard: CanActivateFn = () => checkAuth();
-export const AuthMatchGuard: CanMatchFn = () => checkAuth();
+  if (!token) {
+    router.navigate(['/login'], { replaceUrl: true });
+    return false;
+  }
+  return true;
+};

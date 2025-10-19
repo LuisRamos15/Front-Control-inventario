@@ -1,0 +1,48 @@
+.topbar{
+  position: sticky; top: 0; z-index: 1000;
+  height: 56px; padding: 0 16px;
+  display: flex; align-items: center; gap: 12px;
+  background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+.brand{ font-weight: 700; color: #0b4ea2; display:flex; align-items:center; gap:8px; }
+
+.brand .logo{ width:22px; height:22px; background:#0b4ea2; border-radius:6px; display:inline-block; }
+
+.spacer{ flex:1; }
+
+.status{ font-size: 12px; color:#3b7f2f; display:flex; align-items:center; gap:6px; }
+
+.status .dot{ width:8px; height:8px; background:#39d37b; border-radius:50%; display:inline-block; }
+
+.user{ position: relative; }
+
+.user-btn{
+  display:flex; align-items:center; gap:8px;
+  background:#f6f8fb; border:1px solid #e6eaf2; padding:8px 10px; border-radius:10px;
+  cursor:pointer;
+}
+
+.avatar{
+  width:24px; height:24px; border-radius:50%; background:#0b4ea2; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;
+}
+
+.name{ font-weight:600; color:#2a2f3a; }
+
+.chev{ color:#7a8291; }
+
+.menu{
+  position:absolute; right:0; top: calc(100% + 8px);
+  min-width: 180px; background:#fff; border:1px solid #e6eaf2; border-radius:12px;
+  box-shadow: 0 10px 30px rgba(32,54,93,.12);
+  padding: 8px; z-index: 9999;
+  display:flex; flex-direction:column; gap:4px;
+}
+
+.menu a, .menu button{
+  text-align:left; padding:10px 12px; border-radius:8px;
+  background:transparent; border:0; color:#2a2f3a; cursor:pointer;
+}
+
+.menu a:hover, .menu button:hover{ background:#f2f6ff; color:#0b4ea2; }

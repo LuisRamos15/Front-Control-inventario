@@ -1,0 +1,19 @@
+<header class="topbar" (mouseleave)="close()">
+  <div class="brand">
+    <span class="logo"></span>
+    InventarioPRO
+  </div>
+  <div class="spacer"></div>
+  <div class="status"><span class="dot"></span> En línea</div>
+  <div class="user" (mouseenter)="open = true">
+    <button class="user-btn" type="button" (click)="toggle()">
+      <span class="avatar">A</span>
+      <span class="name">Admin</span>
+      <span class="chev"></span>
+    </button>
+    <div class="menu" *ngIf="open" (mouseenter)="open = true" (mouseleave)="close()">
+      <a routerLink="/perfil">Perfil</a>
+      <button type="button" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+</header>

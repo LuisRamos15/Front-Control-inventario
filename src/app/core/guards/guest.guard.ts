@@ -1,14 +1,13 @@
+import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { CanActivateFn, CanMatchFn, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-function checkGuest(): true | UrlTree {
-  const router = inject(Router);
+export const GuestGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
-  const token = auth.getToken();
-  console.log('[GuestGuard] token =', token);
-  return token ? router.parseUrl('/dashboard') : true;
-}
-
-export const GuestGuard: CanActivateFn = () => checkGuest();
-export const GuestMatchGuard: CanMatchFn = () => checkGuest();
+  const router = inject(Router);
+  if (auth.getToken()) {
+    router.navigate(['/dashboard'], { replaceUrl: true });
+    return false;
+  }
+  return true;
+};

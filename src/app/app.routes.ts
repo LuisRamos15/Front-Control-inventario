@@ -1,43 +1,26 @@
 import { Routes } from '@angular/router';
-import { AuthGuard, AuthMatchGuard } from './core/guards/auth.guard';
-import { GuestGuard, GuestMatchGuard } from './core/guards/guest.guard';
+import { AuthGuard } from './core/guards/auth.guard';
+import { GuestGuard } from './core/guards/guest.guard';
+import { LoginComponent } from './features/auth/pages/login/login.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { LayoutComponent } from './layout/layout.component';
+// (cuando tengamos InventarioComponent lo importamos aquí)
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-
-  // Públicas
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/auth/pages/login/login.component').then(m => m.LoginComponent),
-    canMatch: [GuestMatchGuard],
-    canActivate: [GuestGuard],
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./features/auth/pages/register/register.component').then(m => m.RegisterComponent),
-    canMatch: [GuestMatchGuard],
-    canActivate: [GuestGuard],
-  },
-
-  // Protegidas (shell con sidebar)
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
   {
     path: '',
-    loadComponent: () =>
-      import('./layout/protected-shell.component').then(m => m.ProtectedShellComponent),
-    canMatch: [AuthMatchGuard],        // bloquea el lazy-load si no hay token
-    canActivate: [AuthGuard],          // bloquea la navegación directa
-    canActivateChild: [AuthGuard],     // bloquea cualquier child route
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
     children: [
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-      },
-      // aquí irán más rutas protegidas
+      { path: 'dashboard', component: DashboardComponent, title: 'Dashboard' },
+      // { path: 'inventario', component: InventarioComponent, title: 'Inventario' },
+      // { path: 'movimientos', component: MovimientosComponent },
+      // { path: 'alertas', component: AlertasComponent },
+      // { path: 'reportes', component: ReportesComponent },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ],
   },
-
   { path: '**', redirectTo: 'login' },
 ];
