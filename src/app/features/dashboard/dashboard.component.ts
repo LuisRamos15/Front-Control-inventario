@@ -1,6 +1,8 @@
 import { Component, signal } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
+import { AlertsService, AlertaRes } from '../../core/services/alerts.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
 
@@ -9,7 +11,7 @@ Chart.register(...registerables);
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [NgFor, BaseChartDirective],
+  imports: [NgFor, NgIf, NgClass, BaseChartDirective],
   providers: [provideCharts({})],
   template: `
   <div class="page">
@@ -70,12 +72,14 @@ Chart.register(...registerables);
       </div>
     </div>
 
-    <div class="card alerts">
-      <div class="card-title">Alertas Recientes</div>
-      <div class="alert-row warn">Stock Crítico: Aceite Premium • Stock actual: 2 • Mínimo: 10</div>
-      <div class="alert-row low">Stock Bajo: Detergente Líquido • Stock actual: 15 • Mínimo: 20</div>
-      <div class="alert-row info">Movimiento Inusual Detectado • Entrada de 500 uds de Jabón en Barra</div>
-    </div>
+      <div class="card alerts" *ngIf="isAdmin">
+        <div class="card-title">Alertas Recientes</div>
+        <div *ngIf="loadingAlertas" class="alert-row info">Cargando alertas...</div>
+        <div *ngFor="let a of alerts()" class="alert-row" [ngClass]="a.nivel === 'danger' ? 'warn' : a.nivel === 'warning' ? 'low' : 'info'">
+          {{a.titulo}} • {{a.detalle}}
+        </div>
+        <div *ngIf="!loadingAlertas && alerts().length === 0" class="alert-row info">Sin alertas recientes.</div>
+      </div>
 
   </div>
   `,
@@ -120,6 +124,12 @@ export class DashboardComponent {
   private topSig = signal<TopProducto[]>([]);
   top = () => this.topSig();
 
+  private alertsSig = signal<AlertaRes[]>([]);
+  alerts = () => this.alertsSig();
+
+  isAdmin = false;
+  loadingAlertas = false;
+
   barType: ChartType = 'bar';
   barData: ChartConfiguration['data'] = { labels: [], datasets: [] };
   barOptions: ChartConfiguration['options'] = {
@@ -129,7 +139,8 @@ export class DashboardComponent {
     scales: { x: { stacked: false }, y: { beginAtZero: true } }
   };
 
-  constructor(private api: DashboardService) {
+  constructor(private api: DashboardService, private alertsApi: AlertsService, private auth: AuthService) {
+    this.isAdmin = this.auth.getPrimaryRole() === 'ADMIN';
     this.cargar();
   }
 
@@ -153,5 +164,19 @@ export class DashboardComponent {
     });
 
     this.api.topProductos('SALIDA', 5, desde, hasta).subscribe((t: TopProducto[]) => this.topSig.set(t));
+
+    if (this.isAdmin) {
+      this.loadingAlertas = true;
+      this.alertsApi.recientes().subscribe({
+        next: (a: AlertaRes[]) => {
+          this.alertsSig.set(a);
+          this.loadingAlertas = false;
+        },
+        error: () => {
+          this.alertsSig.set([]);
+          this.loadingAlertas = false;
+        }
+      });
+    }
   }
 }
