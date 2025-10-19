@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 const TOKEN_KEY = 'auth.token';
 
@@ -29,6 +30,10 @@ export class AuthService {
   login(body: LoginReq) { return this.http.post<LoginRes>(`${this.base}/login`, body); }
 
   registro(body: UsuarioReq) { return this.http.post(`${this.base}/registro`, body); }
+
+  register(dto: { nombreUsuario: string; password: string; roles?: string[] }) {
+    return this.http.post(`${environment.apiUrl}/auth/registro`, dto);
+  }
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
