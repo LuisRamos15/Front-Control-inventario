@@ -67,7 +67,13 @@
            </tr>
          </tbody>
        </table>
-       <div class="spinner" *ngIf="cargando"></div>
-      </div>
-   </div>
-</div>
+        <div class="spinner" *ngIf="cargando"></div>
+       </div>
+    </div>
+ </div>
+
+<app-producto-modal
+  [open]="modalOpen"
+  (close)="onModalClosed()"
+  (saved)="onModalSaved()">
+</app-producto-modal>

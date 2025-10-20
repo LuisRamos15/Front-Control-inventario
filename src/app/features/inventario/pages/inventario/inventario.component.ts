@@ -7,12 +7,14 @@ import { ProductosService, Producto } from '../../services/productos.service';
 
 import { WebSocketService } from '../../../../core/services/websocket.service';
 
+import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
+
 type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
 
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ProductoModalComponent],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
@@ -20,6 +22,7 @@ export class InventarioComponent implements OnInit {
   // UI
   buscando = '';
   cargando = false;
+  modalOpen = false;
 
   // datos
   productos: (Producto & { estado?: Estado })[] = [];
@@ -74,11 +77,15 @@ export class InventarioComponent implements OnInit {
   }
 
   // Botones (solo visual por ahora; no se toca navegación)
-  crearProducto(): void {/* future nav */}
+  crearProducto(): void { this.modalOpen = true; }
   editar(p: Producto): void {/* future nav */}
   eliminar(p: Producto): void {/* future action */}
+
+  onModalClosed() { this.modalOpen = false; }
 
   trackById(index: number, p: any) {
     return p?.id ?? p?.sku ?? index;
   }
+
+  onModalSaved()  { /* no hace falta recargar: WS lo hará; opcional this.cargar(); */ }
 }

@@ -1,0 +1,41 @@
+.pm-overlay{
+  position:fixed; inset:0; background:rgba(15, 23, 42, .35);
+  display:flex; align-items:center; justify-content:center; z-index:50;
+}
+
+.pm-card{
+  width:min(720px, 92vw); background:#fff; border-radius:14px; box-shadow:0 20px 50px rgba(17,24,39,.25);
+  border:1px solid #e6ebf5; overflow:hidden;
+}
+
+.pm-header{
+  padding:14px 16px; border-bottom:1px solid #eef2f7;
+}
+
+.pm-header h3{ margin:0; font-size:18px; font-weight:700; color:#111827; }
+
+.pm-body{ padding:16px; }
+
+.pm-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+
+.pm-row label{ font-size:13px; color:#374151; font-weight:600; }
+
+.pm-row input, .pm-row select, .pm-row textarea{
+  border:1px solid #e5e7eb; border-radius:10px; padding:10px 12px; outline:none;
+}
+
+.pm-row input:focus, .pm-row select:focus, .pm-row textarea:focus{
+  border-color:#1e50d6; box-shadow:0 0 0 3px rgba(30,80,214,.12);
+}
+
+.pm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+.pm-footer{ display:flex; justify-content:flex-end; gap:8px; padding-top:6px; }
+
+.pm-btn{ border:none; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; }
+
+.pm-cancel{ background:#f3f4f6; color:#111827; }
+
+.pm-primary{ background:#1e50d6; color:#fff; box-shadow:0 8px 20px rgba(30,80,214,.25); }
+
+.pm-btn:disabled{ opacity:.7; cursor:default; }
