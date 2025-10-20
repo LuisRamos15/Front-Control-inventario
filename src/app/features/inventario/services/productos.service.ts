@@ -10,7 +10,7 @@ export interface Producto {
   nombre: string;
   categoria?: string;
   stock?: number;
-  maximo?: number;
+  stockMaximo?: number;
   precioUnitario?: number;
   descripcion?: string;
   minimo?: number;

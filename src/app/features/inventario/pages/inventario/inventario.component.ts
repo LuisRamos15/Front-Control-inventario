@@ -62,14 +62,14 @@ export class InventarioComponent implements OnInit {
     this.cargar();
   }
 
-  /** Derivar estado visual desde stock/minimo/maximo */
+  /** Derivar estado visual desde stock/minimo/stockMaximo */
   private calcularEstado(p: Producto): Estado {
     const stock = p.stock ?? 0;
     const min   = p.minimo ?? 0;
-    const max   = p.maximo ?? 0;
+    const stockMaximo   = p.stockMaximo ?? 0;
     if (min > 0 && stock <= Math.max(1, Math.floor(min / 2))) return 'CRITICO';
     if (min > 0 && stock <= min) return 'BAJO';
-    if (max > 0 && stock >= max) return 'ALTO';
+    if (stockMaximo > 0 && stock >= stockMaximo) return 'ALTO';
     return 'NORMAL';
   }
 
@@ -77,4 +77,8 @@ export class InventarioComponent implements OnInit {
   crearProducto(): void {/* future nav */}
   editar(p: Producto): void {/* future nav */}
   eliminar(p: Producto): void {/* future action */}
+
+  trackById(index: number, p: any) {
+    return p?.id ?? p?.sku ?? index;
+  }
 }

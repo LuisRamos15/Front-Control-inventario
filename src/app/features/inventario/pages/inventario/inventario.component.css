@@ -123,8 +123,35 @@ padding:10px 8px; border-bottom:1px solid #f3f4f6; font-size:14px; color:#111827
 
 .inv-table tbody tr:hover{ background:#f8fafc; }
 
-.inv-table .num{ text-align:right; }
+.num { text-align: center; }
+
+.inv-table td.num {
+  text-align: center;
+}
 
 .inv-table .sku{ font-weight:700; }
 
 .inv-table .nombre{ font-weight:600; color:#111827; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.8rem;
+  vertical-align: middle;
+}
+
+.table th.text-center,
+.table td.text-center {
+  text-align: center;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.6em;
+  border-radius: 0.5rem;
+}
