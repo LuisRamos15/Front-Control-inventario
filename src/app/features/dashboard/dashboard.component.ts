@@ -127,6 +127,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private topSig = signal<TopProducto[]>([]);
   top = () => this.topSig();
 
+  // --- Constante de zona horaria local ---
+  private readonly TZ = 'America/Bogota';
+
+  private toLocalLabel(ymdUtc: string): string {
+    // construimos fecha asumiendo UTC para ese día y la mostramos en Bogotá
+    const d = new Date(`${ymdUtc}T00:00:00Z`);
+    // 'en-CA' devuelve YYYY-MM-DD; puedes usar 'es-CO' si prefieres 'DD/MM/AAAA'
+    return new Intl.DateTimeFormat('en-CA', { timeZone: this.TZ }).format(d);
+  }
+
+  // Mapea una serie a labels locales Bogotá
+  private mapLabelsToLocal(serie: Array<{ fecha: string }>): string[] {
+    return (serie ?? []).map(s => this.toLocalLabel(s.fecha));
+  }
+
   isAdmin = false;
   loadingAlertas = false;
 
@@ -177,7 +192,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const desde = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const hasta = hoy.toISOString().split('T')[0];
     this.api.movimientosPorDia(desde, hasta).subscribe((rows: DiaMov[]) => {
-      const labels = rows.map((r: DiaMov) => r.fecha);
+      const labels = this.mapLabelsToLocal(rows);
       const entradas = rows.map((r: DiaMov) => r.entradas);
       const salidas = rows.map((r: DiaMov) => r.salidas);
       this.barData = {
