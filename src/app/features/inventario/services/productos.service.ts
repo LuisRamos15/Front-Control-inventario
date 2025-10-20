@@ -18,13 +18,13 @@ export interface Producto {
 
 export interface ProductoCreate {
   sku: string;
+  nombre: string;
   categoria: string;
   stockMaximo: number;
   precioUnitario: number;
-  descripcion?: string;
-  nombre: string;
-  stock: number;   // el back lo exige; usaremos 0 por defecto
-  minimo: number;
+  descripcion?: string | null;
+  stock: number;     // <-- nuevo campo
+  minimo: number;    // <-- fijo en 10
 }
 
 interface PageResp<T> {
@@ -75,7 +75,7 @@ private base = `${this.apiRoot}/productos`;
       .pipe(map(res => res?.content ?? []));
   }
 
-  crear(body: ProductoCreate): Observable<Producto> {
-    return this.http.post<Producto>(this.base, body);
+  crearProducto(body: ProductoCreate): Observable<Producto> {
+    return this.http.post<Producto>('/api/productos', body);
   }
 }

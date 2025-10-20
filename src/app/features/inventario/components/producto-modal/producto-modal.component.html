@@ -1,55 +1,52 @@
 <!-- Overlay -->
 <div *ngIf="open" class="pm-overlay" (click)="onCancel()" (keydown)="esc($event)" tabindex="0">
-  <!-- Card -->
-  <div class="pm-card" (click)="$event.stopPropagation()">
-    <div class="pm-header">
-      <h3>Nuevo Producto</h3>
-    </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="pm-body">
-      <div class="pm-row">
-        <label>SKU</label>
+  <!-- Modal -->
+  <div class="modal" (click)="$event.stopPropagation()">
+     <div class="modal-header">
+       <span class="logo"></span>
+       <h3 class="modal-title">InventarioPRO - Nuevo Producto</h3>
+     </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal-body">
+      <label class="field">
+        <span>SKU</span>
         <input type="text" formControlName="sku" placeholder="SKU-001" />
-      </div>
-      <div class="pm-row">
-        <label>Nombre del Producto</label>
+      </label>
+      <label class="field span-2">
+        <span>Nombre del Producto</span>
         <input type="text" formControlName="nombre" placeholder="Nombre del producto" />
-      </div>
-       <div class="pm-row">
-         <label>Categoría</label>
-         <input
-           type="text"
-           formControlName="categoria"
-           list="categoriaOpciones"
-           placeholder="Escribe o selecciona"
-           autocomplete="off" />
-         <datalist id="categoriaOpciones">
-           <option *ngFor="let c of categorias" [value]="c"></option>
-         </datalist>
-       </div>
-      <div class="pm-grid">
-        <div class="pm-row">
-          <label>Stock Mínimo</label>
-          <input type="number" min="0" formControlName="minimo" />
-        </div>
-        <div class="pm-row">
-          <label>Stock Máximo</label>
-          <input type="number" min="0" formControlName="stockMaximo" />
-        </div>
-      </div>
-      <div class="pm-row">
-        <label>Precio Unitario</label>
-        <input type="number" min="0" step="0.01" formControlName="precioUnitario" />
-      </div>
-      <div class="pm-row">
-        <label>Descripción</label>
-        <textarea rows="3" formControlName="descripcion" placeholder="Descripción del producto"></textarea>
-      </div>
-      <div class="pm-footer">
-        <button type="button" class="pm-btn pm-cancel" (click)="onCancel()" [disabled]="guardando">Cancelar</button>
-        <button type="submit" class="pm-btn pm-primary" [disabled]="guardando">
-          {{ guardando ? 'Guardando' : 'Guardar Producto' }}
-        </button>
+      </label>
+      <label class="field span-2">
+        <span>Categoría</span>
+        <input type="text" formControlName="categoria" list="categoriaOpciones" placeholder="Escribe o selecciona" />
+      </label>
+       <label class="field">
+         <span>Stock Mínimo</span>
+         <input type="number" formControlName="minimo" />
+         <small class="hint">Fijo en 10</small>
+       </label>
+      <label class="field">
+        <span>Stock Máximo</span>
+        <input type="number" formControlName="stockMaximo" />
+      </label>
+      <label class="field">
+        <span>Stock</span>
+        <input type="number" formControlName="stock" />
+      </label>
+      <label class="field">
+        <span>Precio Unitario</span>
+        <input type="number" formControlName="precioUnitario" />
+      </label>
+      <label class="field span-2">
+        <span>Descripción</span>
+        <textarea formControlName="descripcion" rows="3" placeholder="Descripción del producto"></textarea>
+      </label>
+      <div class="actions span-2">
+        <button type="button" class="btn ghost" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn primary" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
       </div>
     </form>
   </div>
 </div>
+<datalist id="categoriaOpciones">
+  <option *ngFor="let c of sugerencias" [value]="c"></option>
+</datalist>

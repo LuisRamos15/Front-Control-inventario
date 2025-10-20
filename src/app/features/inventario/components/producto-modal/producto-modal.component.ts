@@ -24,23 +24,25 @@ export class ProductoModalComponent implements OnChanges {
     nombre: '',
     categoria: '',
     minimo: 10,
+    stock: 0,
     stockMaximo: 500,
     precioUnitario: 0,
     descripcion: ''
   };
 
-  // Sugerencias (sin cambio)
-  categorias = ['Auriculares','Accesorios de computadora','Teclados','Mouses','Cables','Monitores'];
+  // Sugerencias
+  sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
-  constructor(private fb: FormBuilder, private api: ProductosService) {
-    this.form = this.fb.group({
-      sku: [this.defaults.sku, [Validators.required, Validators.minLength(3)]],
-      nombre: [this.defaults.nombre, [Validators.required, Validators.minLength(3)]],
-      categoria: [this.defaults.categoria, [Validators.required]],
-      minimo: [this.defaults.minimo, [Validators.required, Validators.min(0)]],
-      stockMaximo: [this.defaults.stockMaximo, [Validators.required, Validators.min(0)]],
-      precioUnitario: [this.defaults.precioUnitario, [Validators.required, Validators.min(0)]],
-      descripcion: [this.defaults.descripcion]
+  constructor(private fb: FormBuilder, private productosService: ProductosService) {
+    this.form = this.fb.nonNullable.group({
+      sku: ['', [Validators.required]],
+      nombre: ['', [Validators.required]],
+      categoria: [''],
+      minimo: this.fb.nonNullable.control({ value: 10, disabled: true }),
+      stockMaximo: [500, [Validators.required, Validators.min(10)]],
+      stock: [0, [Validators.required, Validators.min(0)]],
+      precioUnitario: [0, [Validators.required, Validators.min(0)]],
+      descripcion: ['']
     });
   }
 
@@ -63,7 +65,16 @@ export class ProductoModalComponent implements OnChanges {
 
   //  Reset centralizado (valores por defecto + pristine/untouched)
   private resetForm(): void {
-    this.form.reset(this.defaults);
+    this.form.reset({
+      sku: '',
+      nombre: '',
+      categoria: '',
+      minimo: { value: 10, disabled: true },
+      stockMaximo: 500,
+      stock: 0,
+      precioUnitario: 0,
+      descripcion: ''
+    });
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
@@ -75,27 +86,28 @@ export class ProductoModalComponent implements OnChanges {
     }
 
     this.guardando = true;
-    const v = this.form.value;
+    const v = this.form.getRawValue();
     const payload: ProductoCreate = {
       sku: (v.sku ?? '').trim(),
       nombre: (v.nombre ?? '').trim(),
-      categoria: (v.categoria ?? '').trim().replace(/\s+/g, ' '),
-      minimo: Number(v.minimo ?? 0),
+      categoria: v.categoria?.trim() ?? '',
+      minimo: Number(v.minimo ?? 10),
+      stock: Number(v.stock ?? 0),
       stockMaximo: Number(v.stockMaximo ?? 0),
       precioUnitario: Number(v.precioUnitario ?? 0),
-      descripcion: (v.descripcion ?? '').trim(),
-      stock: 0
+      descripcion: (v.descripcion ?? '').trim() || null
     };
 
-    this.api.crear(payload).subscribe({
+    this.productosService.crearProducto(payload).subscribe({
       next: () => {
         this.guardando = false;
         this.resetForm();        //  deja listo para próxima apertura
         this.saved.emit();       // (opcional) notifica éxito
         this.close.emit();       // cierra; la lista se actualiza por WS
       },
-      error: () => {
+      error: (e) => {
         this.guardando = false;
+        console.error(e);
         // mantener el formulario para correcciones del usuario
       }
     });
