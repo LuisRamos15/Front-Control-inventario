@@ -63,16 +63,16 @@ Chart.register(...registerables);
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Rotación de Productos</div>
-        <ul class="top-list">
-          <li *ngFor="let p of top()">
-            <span class="sku">{{p.sku}}</span>
-            <span class="name">{{p.nombre}}</span>
-            <span class="qty">{{p.cantidad}}</span>
-          </li>
-        </ul>
-      </div>
+       <div class="card">
+         <div class="card-title">Top Productos</div>
+         <ul class="top-list">
+           <li *ngFor="let p of top()">
+             <span class="sku">{{p.sku}}</span>
+             <span class="name">{{p.nombre}}</span>
+             <span class="qty">{{p.cantidad}}</span>
+           </li>
+         </ul>
+       </div>
     </div>
 
       <div class="card alerts" *ngIf="isAdmin">

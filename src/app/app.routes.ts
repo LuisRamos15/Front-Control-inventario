@@ -18,7 +18,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent, title: 'Dashboard' },
-      // { path: 'inventario', component: InventarioComponent, title: 'Inventario' },
+      {
+        path: 'inventario',
+        loadComponent: () =>
+          import('./features/inventario/pages/inventario/inventario.component')
+            .then(m => m.InventarioComponent),
+        title: 'Inventario'
+      },
       // { path: 'movimientos', component: MovimientosComponent },
       // { path: 'alertas', component: AlertasComponent },
       // { path: 'reportes', component: ReportesComponent },

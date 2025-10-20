@@ -1,0 +1,73 @@
+<!-- Contenedor principal en card, respeta márgenes del layout actual -->
+<div class="inv-wrap">
+  <div class="inv-header">
+    <div class="inv-title">
+      <div class="inv-icon"></div>
+      <h2>Gestión de Inventario</h2>
+    </div>
+    <div class="inv-actions">
+      <div class="inv-search">
+         <input
+           type="text"
+           [(ngModel)]="buscando"
+           placeholder="Buscar por nombre, SKU o categoría..."
+           aria-label="Buscar"
+         />
+          <button type="button" class="inv-search-icon" (click)="onBuscarChange()" title="Buscar">🔍</button>
+      </div>
+      <button class="inv-btn-primary" (click)="crearProducto()">
+        + Nuevo Producto
+      </button>
+    </div>
+  </div>
+  <div class="inv-card">
+    <div class="inv-card-title">Productos Registrados</div>
+    <div class="inv-table-wrap" [class.loading]="cargando">
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Nombre</th>
+            <th>Categoria</th>
+            <th class="num">Stock Actual</th>
+            <th class="num">Stock Máximo</th>
+            <th>Estado</th>
+            <th class="acciones">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="!cargando && filtrados.length === 0">
+            <td colspan="7" class="empty">Sin productos.</td>
+          </tr>
+          <tr *ngFor="let p of filtrados">
+            <td class="sku">{{ p.sku }}</td>
+            <td class="nombre">{{ p.nombre }}</td>
+            <td>{{ p.categoria || '' }}</td>
+            <td class="num">{{ p.stock ?? 0 }}</td>
+            <td class="num">{{ p.maximo ?? 0 }}</td>
+            <td>
+              <span
+                class="badge"
+                [class.badge-critico]="p.estado==='CRITICO'"
+                [class.badge-bajo]="p.estado==='BAJO'"
+                [class.badge-normal]="p.estado==='NORMAL'"
+                [class.badge-alto]="p.estado==='ALTO'"
+              >
+                {{
+                  p.estado==='CRITICO' ? 'Crítico' :
+                  p.estado==='BAJO' ? 'Bajo' :
+                  p.estado==='ALTO' ? 'Alto' : 'Normal'
+                }}
+              </span>
+            </td>
+            <td class="acciones">
+              <button class="btn-icon edit" (click)="editar(p)" title="Editar"></button>
+              <button class="btn-icon del" (click)="eliminar(p)" title="Eliminar"></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="spinner" *ngIf="cargando"></div>
+     </div>
+   </div>
+</div>
