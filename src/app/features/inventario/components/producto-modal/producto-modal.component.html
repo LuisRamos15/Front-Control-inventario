@@ -1,56 +1,99 @@
-<div class="modal-card">
-  <header class="modal-header">
-    <h3>Nuevo Producto</h3>
-    <button type="button" class="close-btn" (click)="onCancel()">&times;</button>
-  </header>
-  <section class="modal-body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="pm-row pm-2cols">
-        <div class="pm-field">
-          <label>SKU</label>
-          <input type="text" formControlName="sku" placeholder="SKU-001" />
-        </div>
-        <div class="pm-field">
-          <label>Nombre del Producto</label>
-          <input type="text" formControlName="nombre" placeholder="Nombre del producto" />
-        </div>
-      </div>
-      <div class="pm-field">
-        <label>Categoría</label>
-        <input type="text" formControlName="categoria" list="categoriaOpciones" placeholder="Escribe o selecciona" />
-      </div>
-      <div class="pm-row pm-2cols">
-        <div class="pm-field">
-          <label>Stock Mínimo</label>
-          <input type="number" formControlName="minimo" [value]="10" [readonly]="true" class="pm-readonly" />
-          <small class="pm-hint">Fijo en 10</small>
-        </div>
-        <div class="pm-field">
-          <label>Stock Máximo</label>
-          <input type="number" formControlName="stockMaximo" />
-        </div>
-      </div>
-      <div class="pm-row pm-2cols">
-        <div class="pm-field">
-          <label>Stock</label>
-          <input type="number" formControlName="stock" />
-        </div>
-        <div class="pm-field">
-          <label>Precio Unitario</label>
-          <input type="number" step="0.01" formControlName="precioUnitario" />
-        </div>
-      </div>
-      <div class="pm-field">
-        <label>Descripción</label>
-        <textarea rows="3" formControlName="descripcion"></textarea>
-      </div>
-    </form>
-  </section>
-  <footer class="modal-footer">
-    <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
-    <button type="button" class="btn-primary" [disabled]="guardando" (click)="onSubmit()">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
-  </footer>
+<div class="producto-modal">
+
+<div class="modal-header">
+
+<h2 class="modal-title">Nuevo Producto</h2>
+
+<button type="button" class="close" (click)="onClose()"></button>
+
 </div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="modal-form">
+
+<div class="form-field">
+
+<label>SKU</label>
+
+<input formControlName="sku" type="text" />
+
+</div>
+
+<div class="form-field">
+
+<label>Nombre del Producto</label>
+
+<input formControlName="nombre" type="text" />
+
+</div>
+
+<div class="form-field full-width">
+
+<label>Categoría</label>
+
+<input formControlName="categoria" type="text" list="categoriaOpciones" placeholder="Escribe o selecciona" />
+
+</div>
+
+<div class="grid-row">
+
+<div class="form-field">
+
+<label>Stock Máximo</label>
+
+<input formControlName="stockMaximo" type="number" />
+
+</div>
+
+<div class="form-field">
+
+<label>Stock</label>
+
+<input formControlName="stock" type="number" />
+
+</div>
+
+</div>
+
+<div class="grid-row">
+
+<div class="form-field">
+
+<label>Precio Unitario</label>
+
+<input formControlName="precioUnitario" type="number" step="0.01" />
+
+</div>
+
+<div class="form-field">
+
+<small class="fixed-note">Stock mínimo: 10 (fijo)</small>
+
+</div>
+
+</div>
+
+<div class="form-field full-width">
+
+<label>Descripción</label>
+
+<textarea formControlName="descripcion"></textarea>
+
+</div>
+
+</form>
+
+<div class="modal-actions">
+
+<button type="button" (click)="onCancel()" class="btn-cancel">Cancelar</button>
+
+<button type="submit" class="btn-save">Guardar Producto</button>
+
+</div>
+
 <datalist id="categoriaOpciones">
-  <option *ngFor="let c of sugerencias" [value]="c"></option>
+
+<option *ngFor="let c of sugerencias" [value]="c"></option>
+
 </datalist>
+
+</div>

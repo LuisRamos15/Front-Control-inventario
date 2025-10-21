@@ -2,7 +2,7 @@ import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
-import { WebSocketService } from '../../core/services/websocket.service';
+import { WebsocketService } from '../../core/services/websocket.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
 import { AlertaEvent } from './models/alerta.model';
@@ -159,7 +159,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     scales: { x: { stacked: false }, y: { beginAtZero: true } }
   };
 
-  constructor(private api: DashboardService, private auth: AuthService, private websocket: WebSocketService) {
+  constructor(private api: DashboardService, private auth: AuthService, private websocket: WebsocketService) {
     this.cargar();
   }
 

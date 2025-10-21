@@ -1,58 +1,78 @@
-import { Injectable } from '@angular/core';
-import { Client, Stomp } from '@stomp/stompjs';
+import { Injectable, NgZone } from '@angular/core';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { Subject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WebSocketService {
-  private client: Client;
+export class WebsocketService {
+  private client!: Client;
+  private subs: StompSubscription[] = [];
+  private productosSubject = new Subject<any>();
   private alertasSubject = new Subject<any>();
   private movimientosSubject = new Subject<any>();
-  private productosSubject = new Subject<any>();
 
-  public alertas$ = this.alertasSubject.asObservable();
-  public movimientos$ = this.movimientosSubject.asObservable();
-  public productos$ = this.productosSubject.asObservable();
+  productos$: Observable<any> = this.productosSubject.asObservable();
+  alertas$: Observable<any> = this.alertasSubject.asObservable();
+  movimientos$: Observable<any> = this.movimientosSubject.asObservable();
 
-  constructor() {
+  constructor(private zone: NgZone) {
+    this.init();
+  }
+
+  init(): void {
+    if (this.client?.active) return;
+
+    // Usa SIEMPRE la URL del backend desde environment (no harcodear localhost)
+    const wsUrl = `${environment.apiUrl}/ws`;  // ej: http://api.midominio.com/ws
+
     this.client = new Client({
-      webSocketFactory: () => new SockJS(environment.wsUrl),
-      debug: (str) => console.log(str),
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      // SockJS para funcionar detrás de proxies y en equipos que no acepten upgrade WS
+      webSocketFactory: () => new SockJS(wsUrl),
+      reconnectDelay: 5000,               // reconectar auto
+      heartbeatIncoming: 10000,
+      heartbeatOutgoing: 10000,
+      debug: () => {}                     // silenciamos logs
     });
 
-    this.client.onConnect = (frame) => {
-      console.log('Connected: ' + frame);
-
-      this.client.subscribe('/topic/alertas', (message) => {
-        this.alertasSubject.next(JSON.parse(message.body));
-      });
-
-      this.client.subscribe('/topic/movimientos', (message) => {
-        this.movimientosSubject.next(JSON.parse(message.body));
-      });
-
-      this.client.subscribe('/topic/productos', (message) => {
-        this.productosSubject.next(JSON.parse(message.body));
-      });
+    this.client.onConnect = () => {
+      // Suscripción a tópicos
+      this.subs.push(
+        this.client.subscribe('/topic/productos', (msg: IMessage) => {
+          this.zone.run(() => {
+            const payload = JSON.parse(msg.body);
+            this.productosSubject.next(payload);
+          });
+        })
+      );
+      this.subs.push(
+        this.client.subscribe('/topic/alertas', (msg: IMessage) => {
+          this.zone.run(() => {
+            const payload = JSON.parse(msg.body);
+            this.alertasSubject.next(payload);
+          });
+        })
+      );
+      this.subs.push(
+        this.client.subscribe('/topic/movimientos', (msg: IMessage) => {
+          this.zone.run(() => {
+            const payload = JSON.parse(msg.body);
+            this.movimientosSubject.next(payload);
+          });
+        })
+      );
     };
 
-    this.client.onStompError = (frame) => {
-      console.error('Broker reported error: ' + frame.headers['message']);
-      console.error('Additional details: ' + frame.body);
-    };
+    this.client.onStompError = () => {};   // opcional: log/telemetría
+    this.client.onWebSocketClose = () => {}; // opcional
 
     this.client.activate();
   }
 
-  disconnect() {
-    if (this.client) {
-      this.client.deactivate();
-    }
+  disconnect(): void {
+    try { this.subs.forEach(s => s.unsubscribe()); } catch {}
+    try { this.client.deactivate(); } catch {}
   }
 }

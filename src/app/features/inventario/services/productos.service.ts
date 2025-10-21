@@ -24,7 +24,6 @@ export interface ProductoCreate {
   precioUnitario: number;
   descripcion?: string | null;
   stock: number;     // <-- nuevo campo
-  minimo: number;    // <-- fijo en 10
 }
 
 interface PageResp<T> {

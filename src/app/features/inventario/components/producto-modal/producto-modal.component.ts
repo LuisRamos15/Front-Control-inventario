@@ -20,7 +20,6 @@ export class ProductoModalComponent implements OnInit {
     sku: '',
     nombre: '',
     categoria: '',
-    minimo: 10,
     stock: 0,
     stockMaximo: 500,
     precioUnitario: 0,
@@ -39,7 +38,6 @@ export class ProductoModalComponent implements OnInit {
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
       categoria: [''],
-      minimo: this.fb.nonNullable.control({ value: 10, disabled: true }),
       stockMaximo: [500, [Validators.required, Validators.min(10)]],
       stock: [0, [Validators.required, Validators.min(0)]],
       precioUnitario: [0, [Validators.required, Validators.min(0)]],
@@ -61,13 +59,16 @@ export class ProductoModalComponent implements OnInit {
     this.dialogRef.close();      //  cierra modal
   }
 
+  onClose(): void {
+    this.onCancel();
+  }
+
   //  Reset centralizado (valores por defecto + pristine/untouched)
   private resetForm(): void {
     this.form.reset({
       sku: '',
       nombre: '',
       categoria: '',
-      minimo: { value: 10, disabled: true },
       stockMaximo: 500,
       stock: 0,
       precioUnitario: 0,
@@ -89,7 +90,6 @@ export class ProductoModalComponent implements OnInit {
       sku: (v.sku ?? '').trim(),
       nombre: (v.nombre ?? '').trim(),
       categoria: v.categoria?.trim() ?? '',
-      minimo: Number(v.minimo ?? 10),
       stock: Number(v.stock ?? 0),
       stockMaximo: Number(v.stockMaximo ?? 0),
       precioUnitario: Number(v.precioUnitario ?? 0),

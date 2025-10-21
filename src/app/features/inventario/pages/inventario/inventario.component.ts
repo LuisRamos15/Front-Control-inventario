@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,9 +6,11 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ProductosService, Producto } from '../../services/productos.service';
 
-import { WebSocketService } from '../../../../core/services/websocket.service';
+import { WebsocketService } from '../../../../core/services/websocket.service';
 
 import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
+
+import { Subscription } from 'rxjs';
 
 type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
 
@@ -19,7 +21,7 @@ type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
-export class InventarioComponent implements OnInit {
+export class InventarioComponent implements OnInit, OnDestroy {
   // UI
   buscando = '';
   cargando = false;
@@ -28,27 +30,35 @@ export class InventarioComponent implements OnInit {
   productos: (Producto & { estado?: Estado })[] = [];
   filtrados: (Producto & { estado?: Estado })[] = [];
 
+  private wsSub?: Subscription;
+
   constructor(
-    private api: ProductosService,
-    private ws: WebSocketService,
+    private productosService: ProductosService,
+    private ws: WebsocketService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.cargar();
-    // Tiempo real: si hay cambios en productos -> recargar
-    this.ws.productos$
-      .pipe(debounceTime(200))
-      .subscribe(() => this.cargar());
+    this.ws.init(); // activa conexión STOMP una sola vez
+    // Cuando llegue un evento del tópico, vuelve a cargar la lista
+    this.wsSub = this.ws.productos$.subscribe((_evt: any) => {
+      this.cargarProductos();  // usa tu método existente de carga
+    });
+    this.cargarProductos();
+  }
+
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
+    // NO llames ws.disconnect() si hay más pantallas que lo usan
   }
 
   /** Carga del backend: lista completa o búsqueda paginada (Page->content) */
-  cargar(): void {
+  private cargarProductos(): void {
     this.cargando = true;
     const q = (this.buscando || '').trim();
-    const src$ = q ? this.api.buscar(q) : this.api.listarTodos();
+    const src$ = q ? this.productosService.buscar(q) : this.productosService.listarTodos();
     src$.subscribe({
-      next: (list) => {
+      next: (list: any) => {
         const arr = Array.isArray(list) ? list : [];
         this.productos = arr.map(p => ({ ...p, estado: this.calcularEstado(p) }));
         this.filtrados = [...this.productos];
@@ -63,7 +73,7 @@ export class InventarioComponent implements OnInit {
 
   /** Cambio en caja de búsqueda (buscar remoto). No toca HTML/CSS. */
   onBuscarChange(): void {
-    this.cargar();
+    this.cargarProductos();
   }
 
   /** Derivar estado visual desde stock/minimo/stockMaximo */
@@ -80,11 +90,13 @@ export class InventarioComponent implements OnInit {
   // Botones (solo visual por ahora; no se toca navegación)
   crearProducto(): void {
     this.dialog.open(ProductoModalComponent, {
-      width: '860px',
-      maxWidth: '92vw',
-      height: 'auto',
-      panelClass: 'producto-modal-pane',
-      autoFocus: false,
+      width: '860px',              // ancho cómodo (maqueta-like)
+      maxWidth: '96vw',            // responsivo
+      height: 'auto',              // alto automático para contenido completo
+      maxHeight: '80vh',           // limita altura en pantallas grandes
+      panelClass: 'producto-modal-panel',
+      autoFocus: false,            // evita scroll inicial por autofocus
+      restoreFocus: true,
     });
   }
   editar(p: Producto): void {/* future nav */}
