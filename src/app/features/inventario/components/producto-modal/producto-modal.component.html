@@ -1,11 +1,10 @@
-<!-- Overlay -->
-<div *ngIf="open" class="pm-overlay" (click)="onCancel()" (keydown)="esc($event)" tabindex="0">
-  <div class="pm-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
-    <header class="pm-header">
-      <h3 class="pm-title">Nuevo Producto</h3>
-      <button type="button" class="pm-close" (click)="onCancel()">&times;</button>
-    </header>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="pm-body">
+<div class="modal-card">
+  <header class="modal-header">
+    <h3>Nuevo Producto</h3>
+    <button type="button" class="close-btn" (click)="onCancel()">&times;</button>
+  </header>
+  <section class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="pm-row pm-2cols">
         <div class="pm-field">
           <label>SKU</label>
@@ -45,12 +44,12 @@
         <label>Descripción</label>
         <textarea rows="3" formControlName="descripcion"></textarea>
       </div>
-      <footer class="pm-footer">
-        <button type="button" class="pm-btn pm-btn-ghost" (click)="onCancel()">Cancelar</button>
-        <button type="submit" class="pm-btn pm-btn-primary" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
-      </footer>
     </form>
-  </div>
+  </section>
+  <footer class="modal-footer">
+    <button type="button" class="btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn-primary" [disabled]="guardando" (click)="onSubmit()">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
+  </footer>
 </div>
 <datalist id="categoriaOpciones">
   <option *ngFor="let c of sugerencias" [value]="c"></option>

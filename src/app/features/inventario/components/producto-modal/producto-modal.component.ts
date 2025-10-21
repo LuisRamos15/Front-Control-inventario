@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ProductosService, ProductoCreate } from '../../services/productos.service';
 
 @Component({
@@ -10,11 +11,7 @@ import { ProductosService, ProductoCreate } from '../../services/productos.servi
   templateUrl: './producto-modal.component.html',
   styleUrls: ['./producto-modal.component.css']
 })
-export class ProductoModalComponent implements OnChanges {
-  @Input() open = false;                // visibilidad
-  @Output() close = new EventEmitter<void>();
-  @Output() saved = new EventEmitter<void>();
-
+export class ProductoModalComponent implements OnInit {
   guardando = false;
   form: FormGroup;
 
@@ -33,7 +30,11 @@ export class ProductoModalComponent implements OnChanges {
   // Sugerencias
   sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
-  constructor(private fb: FormBuilder, private productosService: ProductosService) {
+  constructor(
+    private fb: FormBuilder,
+    private productosService: ProductosService,
+    private dialogRef: MatDialogRef<ProductoModalComponent>
+  ) {
     this.form = this.fb.nonNullable.group({
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
@@ -46,6 +47,10 @@ export class ProductoModalComponent implements OnChanges {
     });
   }
 
+  ngOnInit(): void {
+    this.resetForm();
+  }
+
   esc(e: KeyboardEvent) {
     if (e.key === 'Escape') this.onCancel();
   }
@@ -53,14 +58,7 @@ export class ProductoModalComponent implements OnChanges {
   onCancel(): void {
     if (this.guardando) return;
     this.resetForm();            //  limpia siempre
-    this.close.emit();           //  cierra modal en el padre
-  }
-
-  //  Cada vez que el modal se abre, arrancar limpio
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['open']?.currentValue === true) {
-      this.resetForm();
-    }
+    this.dialogRef.close();      //  cierra modal
   }
 
   //  Reset centralizado (valores por defecto + pristine/untouched)
@@ -102,8 +100,7 @@ export class ProductoModalComponent implements OnChanges {
       next: () => {
         this.guardando = false;
         this.resetForm();        //  deja listo para próxima apertura
-        this.saved.emit();       // (opcional) notifica éxito
-        this.close.emit();       // cierra; la lista se actualiza por WS
+        this.dialogRef.close();  // cierra; la lista se actualiza por WS
       },
       error: (e) => {
         this.guardando = false;

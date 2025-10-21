@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { debounceTime } from 'rxjs/operators';
 
 import { ProductosService, Producto } from '../../services/productos.service';
@@ -14,7 +15,7 @@ type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductoModalComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
@@ -22,7 +23,6 @@ export class InventarioComponent implements OnInit {
   // UI
   buscando = '';
   cargando = false;
-  modalOpen = false;
 
   // datos
   productos: (Producto & { estado?: Estado })[] = [];
@@ -30,7 +30,8 @@ export class InventarioComponent implements OnInit {
 
   constructor(
     private api: ProductosService,
-    private ws: WebSocketService
+    private ws: WebSocketService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -77,15 +78,19 @@ export class InventarioComponent implements OnInit {
   }
 
   // Botones (solo visual por ahora; no se toca navegación)
-  crearProducto(): void { this.modalOpen = true; }
+  crearProducto(): void {
+    this.dialog.open(ProductoModalComponent, {
+      width: '860px',
+      maxWidth: '92vw',
+      height: 'auto',
+      panelClass: 'producto-modal-pane',
+      autoFocus: false,
+    });
+  }
   editar(p: Producto): void {/* future nav */}
   eliminar(p: Producto): void {/* future action */}
-
-  onModalClosed() { this.modalOpen = false; }
 
   trackById(index: number, p: any) {
     return p?.id ?? p?.sku ?? index;
   }
-
-  onModalSaved()  { /* no hace falta recargar: WS lo hará; opcional this.cargar(); */ }
 }

@@ -39,3 +39,20 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:#f6f8ff; }
 
 .status-indicator:not(.main-status) { display: none; }
+
+.btn-secondary {
+  padding: 8px 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.btn-primary {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+}
