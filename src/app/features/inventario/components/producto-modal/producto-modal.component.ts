@@ -18,6 +18,9 @@ export class ProductoModalComponent implements OnChanges {
   @Output() saved = new EventEmitter<void>();
 
   guardando = false;
+  cargando = false;
+  confirmDeleteOpen = false;
+  deleteTarget?: Producto;
   form: FormGroup;
 
   // Valores por defecto para reapertura limpia

@@ -1,0 +1,21 @@
+<!-- Solo renderiza cuando open=true -->
+<div *ngIf="open">
+  <div class="confirm-backdrop" (click)="onBackdrop()"></div>
+  <div class="confirm-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <header class="confirm-header">
+      <h3 class="pm-title">{{ title }}</h3>
+      <button class="confirm-close" (click)="onCancelClicked()" aria-label="Cerrar">×</button>
+    </header>
+    <div class="confirm-body">
+      <p [innerHTML]="message"></p>
+    </div>
+    <footer class="confirm-actions">
+      <button class="confirm-btn cancel" (click)="onCancelClicked()">
+        {{ cancelText }}
+      </button>
+      <button class="confirm-btn danger" (click)="onConfirmClicked()" [disabled]="busy">
+        {{ busy ? 'Procesando...' : confirmText }}
+      </button>
+    </footer>
+  </div>
+</div>

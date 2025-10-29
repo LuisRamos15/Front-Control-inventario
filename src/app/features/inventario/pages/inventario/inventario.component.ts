@@ -10,13 +10,14 @@ import { WebSocketService } from '../../../../core/services/websocket.service';
 import { AuthService } from '../../../../core/services/auth.service';
 
 import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
+import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 
 type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
 
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductoModalComponent],
+  imports: [CommonModule, FormsModule, ProductoModalComponent, ConfirmModalComponent],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
@@ -25,6 +26,8 @@ export class InventarioComponent implements OnInit {
   buscando = '';
   cargando = false;
   modalOpen = false;
+  confirmDeleteOpen = false;
+  deleteTarget?: Producto;
 
   // datos
   productos: (Producto & { estado?: Estado })[] = [];
@@ -92,17 +95,37 @@ this.editTarget = p;
 this.modalOpen = true;
 }
   eliminar(p: Producto): void {
-if (!this.canManageProductos) { return; }
-const ok = window.confirm(`¿Eliminar el producto "${p.nombre}" (SKU ${p.sku})? Esta acción no se puede deshacer.`);
-if (!ok) { return; }
-this.cargando = true;
-    this.productosService.eliminarProducto(p.id!)
-     .subscribe({
-next: () => { this.cargando = false; /* la lista se actualiza por WS */ },
-error: (e) => { this.cargando = false; console.error(e); }
-});}
+    if (!this.canManageProductos) { return; }
+    this.deleteTarget = p;
+    this.confirmDeleteOpen = true;
+  }
+
+  doDelete(): void {
+    if (!this.deleteTarget) return;
+    this.cargando = true;
+    this.productosService.eliminarProducto(this.deleteTarget.id!)
+      .subscribe({
+        next: () => {
+          this.cargando = false;
+          this.closeConfirmDelete();
+          /* la lista se actualiza por WS */
+        },
+        error: (e) => {
+          this.cargando = false;
+          console.error(e);
+          this.closeConfirmDelete();
+        }
+      });
+  }
+
+  closeConfirmDelete(): void {
+    this.confirmDeleteOpen = false;
+    this.deleteTarget = undefined;
+  }
 
   onModalClosed() { this.modalOpen = false; this.editTarget = undefined; }
+
+
 
   trackById(index: number, p: any) {
     return p?.id ?? p?.sku ?? index;

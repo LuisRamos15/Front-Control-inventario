@@ -72,9 +72,21 @@
     </div>
  </div>
 
- <app-producto-modal
-   [open]="modalOpen"
-   [producto]="editTarget"
-   (close)="onModalClosed()"
-   (saved)="onModalSaved()">
- </app-producto-modal>
+   <app-producto-modal
+     [open]="modalOpen"
+     [producto]="editTarget"
+     (close)="onModalClosed()"
+     (saved)="onModalSaved()">
+   </app-producto-modal>
+
+   <app-confirm-modal
+     [open]="confirmDeleteOpen"
+     [title]="'Confirmar eliminación'"
+     [message]="'¿Eliminar el producto <strong>' + (deleteTarget?.nombre || '') + '</strong> (SKU <strong>' + (deleteTarget?.sku || '') + '</strong>)? <br>Esta acción no se puede deshacer.'"
+     [confirmText]="'Eliminar'"
+     [cancelText]="'Cancelar'"
+     [busy]="cargando"
+     (confirm)="doDelete()"
+     (cancel)="closeConfirmDelete()">
+   </app-confirm-modal>
+
