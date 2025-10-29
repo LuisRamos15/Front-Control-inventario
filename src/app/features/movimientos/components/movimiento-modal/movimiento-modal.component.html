@@ -1,20 +1,20 @@
 <!-- ===== BEGIN PATCH: movimiento-modal.component.html ===== -->
 
-<div *ngIf="open">
+<div>
 
-<div class="confirm-backdrop" (click)="onCancel()"></div>
+ <div class="mm-backdrop" (click)="onCancel()"></div>
 
-<div class="confirm-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+ <div class="mm-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
 
-<header class="confirm-header">
+ <div class="mm-header">
 
-<h3 class="pm-title">Nuevo Movimiento</h3>
+ <div class="mm-title">Nuevo Movimiento</div>
 
-<button class="confirm-close" (click)="onCancel()" aria-label="Cerrar"></button>
+ <button class="mm-close" (click)="onCancel()" aria-label="Cerrar"></button>
 
-</header>
+ </div>
 
-<div class="confirm-body">
+ <div class="mm-body">
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
@@ -68,17 +68,17 @@ Stock actual: <strong>{{ seleccionado?.stock }}</strong>
 
 </div>
 
-<footer class="confirm-actions">
+ <div class="mm-actions">
 
-<button class="confirm-btn cancel" type="button" (click)="onCancel()">Cancelar</button>
+ <button class="mm-btn ghost" type="button" (click)="onCancel()">Cancelar</button>
 
-<button class="confirm-btn primary" type="submit" [disabled]="guardando || form.invalid">
+  <button class="mm-btn primary" type="submit" [disabled]="form.invalid">
 
-{{ guardando ? 'Registrando...' : 'Registrar' }}
+  Registrar
 
-</button>
+ </button>
 
-</footer>
+ </div>
 
 </form>
 

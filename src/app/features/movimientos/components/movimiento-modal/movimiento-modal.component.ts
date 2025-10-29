@@ -17,11 +17,11 @@ import { of } from 'rxjs';
 export class MovimientoModalComponent implements OnChanges, OnInit {
   @Input() open = false;
   @Output() close = new EventEmitter<void>();
-  @Output() saved = new EventEmitter<void>();
+  @Output() saved = new EventEmitter<MovimientoCreate>();
 
   form: FormGroup;
   buscando = false;
-  guardando = false;
+
   resultados: Producto[] = [];
   seleccionado?: Producto;
 
@@ -72,28 +72,29 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
     this.form.patchValue({ productoId: p.id, search: `${p.sku} - ${p.nombre}` });
   }
 
-  onSubmit() {
-    if (this.form.invalid) return;
-    const tipo = this.form.value.tipo as 'ENTRADA'|'SALIDA';
-    if (!this.auth.canCreateMovimiento(tipo)) return;
-    const payload: MovimientoCreate = {
-      productoId: this.form.value.productoId,
-      cantidad: this.form.value.cantidad,
-      tipo
-    };
-    this.guardando = true;
-    this.svc.registrar(payload).subscribe({
-      next: () => {
-        this.guardando = false;
-        this.saved.emit();
-        this.close.emit();
-      },
-      error: (e) => {
-        this.guardando = false;
-        console.error(e);
-      }
-    });
-  }
+   onSubmit() {
+
+     if (this.form.invalid) return;
+
+     const tipo = this.form.value.tipo as 'ENTRADA'|'SALIDA';
+
+     if (!this.auth.canCreateMovimiento(tipo)) return;
+
+     const payload: MovimientoCreate = {
+
+       productoId: this.form.value.productoId,
+
+       cantidad: this.form.value.cantidad,
+
+       tipo
+
+     };
+
+      this.saved.emit(payload);
+
+      this.close.emit();
+
+   }
 
   onCancel() {
     this.close.emit();

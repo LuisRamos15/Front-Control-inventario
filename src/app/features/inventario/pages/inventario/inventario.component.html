@@ -41,7 +41,10 @@
            </tr>
             <tr *ngFor="let p of filtrados; trackBy: trackById">
              <td>{{ p.sku }}</td>
-             <td class="fw-semibold">{{ p.nombre }}</td>
+              <td class="prod-cell">
+                <span class="prod-name">{{ p.nombre }}</span>
+                <small class="sku-chip">({{ p.sku }})</small>
+              </td>
              <td>{{ p.categoria || '' }}</td>
              <td class="num">{{ p?.stock ?? 0 }}</td>
              <td class="num">{{ p?.stockMaximo ?? 0 }}</td>

@@ -4,15 +4,81 @@ display: block;
 
 }
 
-.mm-actions {
+/* Backdrop + panel centrado */
 
-display: flex;
+.mm-backdrop{
 
-gap: 8px;
+position: fixed; inset: 0;
 
-justify-content: flex-end;
+background: rgba(15, 23, 42, .45);
+
+z-index: 1000;
 
 }
+
+.mm-panel{
+
+position: fixed; inset: 0; z-index: 1001;
+
+margin: auto; width: 520px; max-width: 92vw;
+
+background: #fff; border-radius: 14px;
+
+box-shadow: 0 20px 60px rgba(0,0,0,.2);
+
+display: grid; grid-template-rows: auto 1fr auto;
+
+}
+
+.mm-header{
+
+display:flex; align-items:center; justify-content:space-between;
+
+padding: 14px 18px; border-bottom: 1px solid #eceff3;
+
+}
+
+.mm-title{ font-weight:600; font-size:16px; }
+
+.mm-close{
+
+appearance:none; border:none; background:transparent;
+
+font-size:22px; line-height:1; cursor:pointer;
+
+}
+
+.mm-body{ padding: 16px 18px; display:grid; gap:10px; }
+
+.mm-label{ font-size:13px; color:#334155; }
+
+.mm-input, .mm-textarea{
+
+width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:10px;
+
+}
+
+.mm-radio{ display:flex; gap:16px; padding:6px 0; }
+
+.mm-actions{
+
+display:flex; justify-content:flex-end; gap:10px;
+
+padding: 12px 16px; border-top:1px solid #eceff3;
+
+}
+
+.mm-btn{
+
+border:1px solid transparent; border-radius:10px;
+
+padding:8px 12px; cursor:pointer;}
+
+.mm-btn.ghost{ border-color:#cbd5e1; background:#fff; }
+
+.mm-btn.primary{ background:#2563eb; color:#fff; }
+
+.mm-btn.primary:disabled{ opacity:.6; cursor:not-allowed; }
 
 .mm-error {
 

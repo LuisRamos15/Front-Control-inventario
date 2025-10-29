@@ -2,7 +2,7 @@
 
 <h2>Registro de Movimientos</h2>
 
-<button class="btn-primary" (click)="openModal()" *ngIf="canOpen">+ Nuevo Movimiento</button>
+<button class="btn btn-primary" (click)="openNuevoMovimiento()">+ Nuevo Movimiento</button>
 
 </section>
 
@@ -54,7 +54,13 @@
 
 </td>
 
-<td>{{ m.productoNombre }} <small class="muted">({{ m.sku }})</small></td>
+<td class="prod-cell">
+
+<span class="prod-name">{{ m.productoNombre }}</span>
+
+<small class="sku-chip">({{ m.sku }})</small>
+
+</td>
 
 <td [class.pos]="m.tipo==='ENTRADA'" [class.neg]="m.tipo==='SALIDA'">
 
@@ -82,7 +88,7 @@
 
 </div>
 
-<div class="paginacion">
+<div class="pager">
 
 <button (click)="pagePrev()" [disabled]="page===0">Anterior</button>
 
@@ -94,10 +100,10 @@
 
 <app-movimiento-modal
 
-[open]="modalOpen"
+*ngIf="showNuevoModal"
 
-(close)="onClose()"
+(close)="closeNuevoMovimiento()"
 
-(saved)="onSaved()">
+(saved)="onMovimientoGuardado($event)">
 
 </app-movimiento-modal>

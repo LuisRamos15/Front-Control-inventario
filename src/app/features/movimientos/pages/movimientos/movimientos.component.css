@@ -20,4 +20,16 @@
 
 .pos{ color:#16a34a; } .neg{ color:#e11d48; }
 
-.paginacion{ display:flex; align-items:center; gap:12px; justify-content:flex-end; padding-top:10px; }
+.pager {
+
+display: inline-flex; align-items: center; gap: 8px;
+
+}
+
+.pager button{
+
+border:1px solid #cbd5e1; background:#fff; padding:6px 10px; border-radius:8px; cursor:pointer;
+
+}
+
+.pager button:disabled{ opacity:.5; pointer-events:none; }

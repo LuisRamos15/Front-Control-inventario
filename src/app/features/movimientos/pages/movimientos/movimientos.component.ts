@@ -31,9 +31,13 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   cargando = false;
 
-  data: Movimiento[] = [];
+   data: Movimiento[] = [];
 
-  modalOpen = false;
+   modalOpen = false;
+
+   // propiedades
+
+   showNuevoModal = false;
 
   private wsSub?: Subscription;
 
@@ -83,37 +87,67 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   }
 
-  load(): void {
+   load(): void {
 
-    this.cargando = true;
+     this.cargando = true;
 
-    const tipo = this.tab === 'TODOS' ? '' : (this.tab === 'ENTRADAS' ? 'ENTRADA' : 'SALIDA');
+     const tipo = this.tab === 'TODOS' ? '' : (this.tab === 'ENTRADAS' ? 'ENTRADA' : 'SALIDA');
 
-    this.svc.listar({ page: this.page, size: this.size, sort: 'fecha,desc', tipo })
+     this.svc.listar({ page: this.page, size: this.size, sort: 'fecha,desc', tipo })
 
-    .subscribe({
+     .subscribe({
 
-      next: (resp: PageResp<Movimiento>) => {
+       next: (resp: PageResp<Movimiento>) => {
 
-        this.data = resp.content;
+         this.data = resp.content;
 
-        this.total = resp.totalElements;
+         this.total = resp.totalElements;
 
-        this.cargando = false;
+         this.cargando = false;
 
-      },
+       },
 
-      error: (e) => { console.error(e); this.cargando = false; }
+       error: (e) => { console.error(e); this.cargando = false; }
 
-    });
+     });
 
-  }
+   }
 
-  openModal(){ if (this.canOpen) { this.modalOpen = true; } }
+   openNuevoMovimiento(){ if (this.canOpen) { this.showNuevoModal = true; } }
 
-  onSaved(){ this.modalOpen = false; /* WS hará refresh */ }
+   closeNuevoMovimiento(){ this.showNuevoModal = false; }
 
-  onClose(){ this.modalOpen = false; }
+   onMovimientoGuardado(payload: any) {
+
+     // Enviar SOLO los campos requeridos por el backend:
+
+     const req = {
+
+       productoId: payload.productoId,
+
+       tipo: payload.tipo,
+
+       cantidad: payload.cantidad
+
+     };
+
+     // Llamar al servicio existente que hace POST /api/movimientos
+
+     this.svc.registrar(req).subscribe({
+
+       next: () => {
+
+         this.closeNuevoMovimiento();
+
+         this.load();
+
+       },
+
+       error: (e) => console.error(e)
+
+     });
+
+   }
 
   pageNext(){ if ((this.page + 1) * this.size < this.total) { this.page++; this.load(); } }
 
