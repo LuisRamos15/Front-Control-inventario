@@ -18,26 +18,26 @@
   </div>
 
   <!-- Menú -->
-  <nav class="menu">
-    <a routerLink="/dashboard" routerLinkActive="active" class="item" [routerLinkActiveOptions]="{ exact: true }">
-      <span class="icon"></span>
-      <span class="label">Dashboard</span>
+  <nav class="sidenav">
+    <a class="sidenav-link" [routerLink]="'/dashboard'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <i class="ri-home-5-line"></i>
+      <span>Dashboard</span>
     </a>
-    <a routerLink="/inventario" routerLinkActive="active" class="item">
-      <span class="icon"></span>
-      <span class="label">Inventario</span>
+    <a class="sidenav-link" [routerLink]="'/inventario'" routerLinkActive="active">
+      <i class="ri-archive-2-line"></i>
+      <span>Inventario</span>
     </a>
-     <a routerLink="/movimientos" routerLinkActive="active" class="item" [routerLinkActiveOptions]="{ exact: true }">
-       <span class="icon"></span>
-       <span class="label">Movimientos</span>
-     </a>
-    <a routerLink="/alertas" routerLinkActive="active" class="item">
-      <span class="icon"></span>
-      <span class="label">Alertas</span>
+    <a class="sidenav-link" [routerLink]="'/movimientos'" routerLinkActive="active">
+      <i class="ri-exchange-line"></i>
+      <span>Movimientos</span>
     </a>
-    <a routerLink="/reportes" routerLinkActive="active" class="item">
-      <span class="icon"></span>
-      <span class="label">Reportes</span>
+    <a class="sidenav-link" [routerLink]="'/alertas'" routerLinkActive="active">
+      <i class="ri-alert-line"></i>
+      <span>Alertas</span>
+    </a>
+    <a class="sidenav-link" [routerLink]="'/reportes'" routerLinkActive="active">
+      <i class="ri-bar-chart-line"></i>
+      <span>Reportes</span>
     </a>
   </nav>
 </aside>

@@ -114,3 +114,49 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:
   opacity: .6;
   cursor: not-allowed;
 }
+
+:root{
+--sidenav-text: #cfe3ff;               /* texto normal */
+--sidenav-text-active: #ffffff;        /* texto activo/hover */
+--sidenav-hover-bg: rgba(255,255,255,.10); /* hover visible sobre fondo azul */
+--sidenav-active-bg: rgba(255,255,255,.18);/* activo con más contraste */
+--sidenav-radius: 10px;
+}
+
+/* Contenedor del menú lateral */
+.sidenav{
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+/* Enlaces del menú lateral */
+.sidenav .sidenav-link {
+display: flex;
+align-items: center;
+gap: .5rem;
+padding: .55rem .85rem;
+border-radius: var(--sidenav-radius);
+color: var(--sidenav-text);
+text-decoration: none;
+user-select: none;
+transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.sidenav .sidenav-link:hover,
+.sidenav .sidenav-link:focus-visible {
+background: var(--sidenav-hover-bg);
+color: var(--sidenav-text-active);
+outline: none;
+}
+
+.sidenav .sidenav-link.active {
+background: var(--sidenav-active-bg);
+color: var(--sidenav-text-active);
+font-weight: 700;
+}
+
+.sidenav .sidenav-link i {
+width: 18px;
+text-align: center;
+}
