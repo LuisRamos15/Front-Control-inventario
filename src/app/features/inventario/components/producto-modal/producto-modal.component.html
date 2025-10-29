@@ -47,7 +47,7 @@
       </div>
       <footer class="pm-footer">
         <button type="button" class="pm-btn pm-btn-ghost" (click)="onCancel()">Cancelar</button>
-        <button type="submit" class="pm-btn pm-btn-primary" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
+        <button type="submit" class="pm-btn pm-btn-primary" [disabled]="guardando || !canManageProductos">{{ guardando ? 'Guardando...' : 'Guardar Producto' }}</button>
       </footer>
     </form>
   </div>

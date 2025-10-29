@@ -15,9 +15,9 @@
          />
           <button type="button" class="inv-search-icon" (click)="onBuscarChange()" title="Buscar">🔍</button>
       </div>
-      <button class="inv-btn-primary" (click)="crearProducto()">
-        + Nuevo Producto
-      </button>
+       <button class="inv-btn-primary" (click)="crearProducto()" *ngIf="canManageProductos">
+         + Nuevo Producto
+       </button>
     </div>
   </div>
   <div class="inv-card">

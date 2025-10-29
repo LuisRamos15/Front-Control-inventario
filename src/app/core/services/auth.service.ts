@@ -99,4 +99,18 @@ export class AuthService {
       return {};
     }
   }
+
+  /** Devuelve roles actuales desde el estado ya existente (userSubject). */
+  getRoles(): AppRole[] {
+    try {
+      const v = (this as any).userSubject?.value?.roles;
+      return Array.isArray(v) ? (v as AppRole[]) : [];
+    } catch { return []; }
+  }
+
+  /** ¿Puede gestionar productos? Solo ADMIN o SUPERVISOR. */
+  canManageProductos(): boolean {
+    const roles = this.getRoles();
+    return roles.includes('ADMIN') || roles.includes('SUPERVISOR');
+  }
 }

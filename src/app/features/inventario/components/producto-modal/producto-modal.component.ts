@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductosService, ProductoCreate } from '../../services/productos.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-producto-modal',
@@ -33,7 +34,7 @@ export class ProductoModalComponent implements OnChanges {
   // Sugerencias
   sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
-  constructor(private fb: FormBuilder, private productosService: ProductosService) {
+  constructor(private fb: FormBuilder, private productosService: ProductosService, private auth: AuthService) {
     this.form = this.fb.nonNullable.group({
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
@@ -44,6 +45,10 @@ export class ProductoModalComponent implements OnChanges {
       precioUnitario: [0, [Validators.required, Validators.min(0)]],
       descripcion: ['']
     });
+  }
+
+  get canManageProductos(): boolean {
+    return this.auth.canManageProductos();
   }
 
   esc(e: KeyboardEvent) {
@@ -80,6 +85,7 @@ export class ProductoModalComponent implements OnChanges {
   }
 
   onSubmit(): void {
+    if (!this.canManageProductos) { return; }  // corta ejecución para operador
     if (this.guardando || this.form.invalid) {
       this.form.markAllAsTouched();
       return;

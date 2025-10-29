@@ -7,6 +7,8 @@ import { ProductosService, Producto } from '../../services/productos.service';
 
 import { WebSocketService } from '../../../../core/services/websocket.service';
 
+import { AuthService } from '../../../../core/services/auth.service';
+
 import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
 
 type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
@@ -30,8 +32,13 @@ export class InventarioComponent implements OnInit {
 
   constructor(
     private api: ProductosService,
-    private ws: WebSocketService
+    private ws: WebSocketService,
+    private auth: AuthService
   ) {}
+
+  get canManageProductos(): boolean {
+    return this.auth.canManageProductos();
+  }
 
   ngOnInit(): void {
     this.cargar();
