@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { ProductosService, Producto } from '../../../inventario/services/productos.service';
 import { MovimientosService, MovimientoCreate } from '../../services/movimientos.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -10,7 +11,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-movimiento-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
   templateUrl: './movimiento-modal.component.html',
   styleUrls: ['./movimiento-modal.component.css']
 })

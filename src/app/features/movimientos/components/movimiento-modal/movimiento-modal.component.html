@@ -1,38 +1,46 @@
-<!-- ===== BEGIN PATCH: movimiento-modal.component.html ===== -->
+<!-- Backdrop -->
 
-<div>
+<div class="mp-overlay" (click)="onCancel()"></div>
 
- <div class="mm-backdrop" (click)="onCancel()"></div>
+<!-- Caja modal -->
 
- <div class="mm-panel" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+<div class="mp-modal" role="dialog" aria-modal="true">
 
- <div class="mm-header">
+<div class="mp-header">
 
- <div class="mm-title">Nuevo Movimiento</div>
+<div class="mp-title">
 
- <button class="mm-close" (click)="onCancel()" aria-label="Cerrar"></button>
+<mat-icon class="mp-icon">add</mat-icon>
 
- </div>
-
- <div class="mm-body">
-
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-<div class="row">
-
-<label>Tipo</label>
-
-<select formControlName="tipo" [disabled]="soloSalida">
-
-<option value="ENTRADA">ENTRADA</option>
-
-<option value="SALIDA">SALIDA</option>
-
-</select>
+<h3>Registrar Movimiento</h3>
 
 </div>
 
-<div class="row">
+<button type="button" class="mp-close" (click)="onCancel()" aria-label="Cerrar">×</button>
+
+</div>
+
+<!-- Cuerpo del modal: envuelve el formulario existente -->
+
+<div class="mp-body">
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+<div class="mp-field">
+
+<label>Tipo</label>
+
+<div class="radio-group">
+
+<label><input type="radio" formControlName="tipo" value="ENTRADA" [disabled]="soloSalida"> ENTRADA</label>
+
+<label><input type="radio" formControlName="tipo" value="SALIDA"> SALIDA</label>
+
+</div>
+
+</div>
+
+<div class="mp-field">
 
 <label>Producto</label>
 
@@ -50,7 +58,7 @@
 
 </div>
 
-<div class="row">
+<div class="mp-field">
 
 <label>Cantidad</label>
 
@@ -68,24 +76,20 @@ Stock actual: <strong>{{ seleccionado?.stock }}</strong>
 
 </div>
 
- <div class="mm-actions">
+<div class="mp-actions">
 
- <button class="mm-btn ghost" type="button" (click)="onCancel()">Cancelar</button>
+<button class="mm-btn ghost" type="button" (click)="onCancel()">Cancelar</button>
 
-  <button class="mm-btn primary" type="submit" [disabled]="form.invalid">
+<button class="mm-btn primary" type="submit" [disabled]="form.invalid">
 
-  Registrar
+Registrar
 
- </button>
+</button>
 
- </div>
+</div>
 
 </form>
 
 </div>
 
 </div>
-
-</div>
-
-<!-- ===== END PATCH ===== -->
