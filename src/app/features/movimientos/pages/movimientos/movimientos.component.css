@@ -1,0 +1,23 @@
+.encabezado{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+
+.btn-primary{ background:#2563eb; color:#fff; border:none; border-radius:10px; padding:10px 12px; font-weight:700; cursor:pointer; }
+
+.tabs{ display:flex; gap:12px; margin-bottom:10px; }
+
+.tabs > button{ border:none; background:#eef2f7; padding:8px 12px; border-radius:10px; cursor:pointer; }
+
+.tabs > button.active{ background:#2563eb; color:#fff; }
+
+.tabla-wrapper{ overflow:auto; border-radius:8px; }
+
+.tabla th, .tabla td{ padding:10px 12px; border-bottom:1px solid #eef2f7; }
+
+.muted{ color:#64748b; }
+
+.entrada{ color:#16a34a; font-weight:700; }
+
+.salida{ color:#e11d48; font-weight:700; }
+
+.pos{ color:#16a34a; } .neg{ color:#e11d48; }
+
+.paginacion{ display:flex; align-items:center; gap:12px; justify-content:flex-end; padding-top:10px; }

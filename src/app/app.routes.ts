@@ -18,18 +18,25 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent, title: 'Dashboard' },
-      {
-        path: 'inventario',
-        loadComponent: () =>
-          import('./features/inventario/pages/inventario/inventario.component')
-            .then(m => m.InventarioComponent),
-        title: 'Inventario'
-      },
-      // { path: 'movimientos', component: MovimientosComponent },
+       {
+         path: 'inventario',
+         loadComponent: () =>
+           import('./features/inventario/pages/inventario/inventario.component')
+             .then(m => m.InventarioComponent),
+         title: 'Inventario'
+       },
+       {
+         path: 'movimientos',
+         loadComponent: () =>
+           import('./features/movimientos/pages/movimientos/movimientos.component')
+             .then(c => c.MovimientosComponent),
+         title: 'Movimientos'
+       },
+       // { path: 'alertas', component: AlertasComponent },
       // { path: 'alertas', component: AlertasComponent },
       // { path: 'reportes', component: ReportesComponent },
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
-    ],
-  },
-  { path: '**', redirectTo: 'login' },
+       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
+     ],
+   },
+   { path: '**', redirectTo: 'dashboard' },
 ];

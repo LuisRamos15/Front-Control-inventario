@@ -113,4 +113,26 @@ export class AuthService {
     const roles = this.getRoles();
     return roles.includes('ADMIN') || roles.includes('SUPERVISOR');
   }
+
+  isAdminOrSupervisor(): boolean {
+    const r = this.getPrimaryRole()?.toUpperCase?.() || '';
+    return r === 'ADMIN' || r === 'SUPERVISOR' || r === 'ROLE_ADMIN' || r === 'ROLE_SUPERVISOR';
+  }
+
+  isOperator(): boolean {
+    const r = this.getPrimaryRole()?.toUpperCase?.() || '';
+    return r === 'OPERADOR' || r === 'OPERATOR' || r === 'ROLE_OPERADOR' || r === 'ROLE_OPERATOR';
+  }
+
+  /** Operador solo puede SALIDA; Admin/Supervisor: ambos */
+  canCreateMovimiento(tipo: 'ENTRADA'|'SALIDA'): boolean {
+    if (this.isAdminOrSupervisor()) return true;
+    if (this.isOperator()) return tipo === 'SALIDA';
+    return false;
+  }
+
+  /** Para la UI del botón "Nuevo Movimiento" */
+  canOpenMovimientoModal(): boolean {
+    return this.isAdminOrSupervisor() || this.isOperator();
+  }
 }

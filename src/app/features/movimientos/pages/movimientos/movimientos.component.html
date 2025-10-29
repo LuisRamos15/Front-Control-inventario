@@ -1,0 +1,103 @@
+<section class="encabezado">
+
+<h2>Registro de Movimientos</h2>
+
+<button class="btn-primary" (click)="openModal()" *ngIf="canOpen">+ Nuevo Movimiento</button>
+
+</section>
+
+<nav class="tabs">
+
+<button [class.active]="tab==='TODOS'" (click)="setTab('TODOS')">Todos</button>
+
+<button [class.active]="tab==='ENTRADAS'" (click)="setTab('ENTRADAS')">Entradas</button>
+
+<button [class.active]="tab==='SALIDAS'" (click)="setTab('SALIDAS')">Salidas</button>
+
+</nav>
+
+<div class="tabla-wrapper">
+
+<table class="tabla">
+
+<thead>
+
+<tr>
+
+<th>Fecha/Hora</th>
+
+<th>Tipo</th>
+
+<th>Producto</th>
+
+<th>Cantidad</th>
+
+<th>Usuario</th>
+
+<th>Motivo</th>
+
+<th>Notas</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let m of data">
+
+<td>{{ m.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+
+<td [class.entrada]="m.tipo==='ENTRADA'" [class.salida]="m.tipo==='SALIDA'">
+
+{{ m.tipo }}
+
+</td>
+
+<td>{{ m.productoNombre }} <small class="muted">({{ m.sku }})</small></td>
+
+<td [class.pos]="m.tipo==='ENTRADA'" [class.neg]="m.tipo==='SALIDA'">
+
+{{ m.tipo==='ENTRADA' ? '+' : '-' }}{{ m.cantidad }}
+
+</td>
+
+<td>{{ m.usuario }}</td>
+
+<td>{{ motivoOf(m) }}</td>
+
+<td></td>
+
+</tr>
+
+<tr *ngIf="!cargando && data.length===0">
+
+<td colspan="7" class="muted">Sin registros.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="paginacion">
+
+<button (click)="pagePrev()" [disabled]="page===0">Anterior</button>
+
+<span>Página {{ page+1 }} / {{ getTotalPages() }}</span>
+
+<button (click)="pageNext()" [disabled]="(page+1)*size >= total">Siguiente</button>
+
+</div>
+
+<app-movimiento-modal
+
+[open]="modalOpen"
+
+(close)="onClose()"
+
+(saved)="onSaved()">
+
+</app-movimiento-modal>

@@ -1,0 +1,23 @@
+:host {
+
+display: block;
+
+}
+
+.mm-actions {
+
+display: flex;
+
+gap: 8px;
+
+justify-content: flex-end;
+
+}
+
+.mm-error {
+
+font-size: 12px;
+
+color: #e11d48; /* rojo suave */
+
+}

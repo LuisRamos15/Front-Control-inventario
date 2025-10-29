@@ -1,0 +1,91 @@
+<!-- ===== BEGIN PATCH: movimiento-modal.component.html ===== -->
+
+<div *ngIf="open">
+
+<div class="confirm-backdrop" (click)="onCancel()"></div>
+
+<div class="confirm-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+<header class="confirm-header">
+
+<h3 class="pm-title">Nuevo Movimiento</h3>
+
+<button class="confirm-close" (click)="onCancel()" aria-label="Cerrar"></button>
+
+</header>
+
+<div class="confirm-body">
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+<div class="row">
+
+<label>Tipo</label>
+
+<select formControlName="tipo" [disabled]="soloSalida">
+
+<option value="ENTRADA">ENTRADA</option>
+
+<option value="SALIDA">SALIDA</option>
+
+</select>
+
+</div>
+
+<div class="row">
+
+<label>Producto</label>
+
+<input type="text" formControlName="search" placeholder="Buscar por SKU o nombre">
+
+<div class="results" *ngIf="resultados.length">
+
+<button type="button" *ngFor="let p of resultados" (click)="seleccionar(p)">
+
+{{ p.sku }} - {{ p.nombre }} &nbsp; (Stock: {{ p.stock }})
+
+</button>
+
+</div>
+
+</div>
+
+<div class="row">
+
+<label>Cantidad</label>
+
+<input type="number" min="1" formControlName="cantidad">
+
+</div>
+
+<div class="hint" *ngIf="seleccionado">
+
+Stock actual: <strong>{{ seleccionado?.stock }}</strong>
+
+&nbsp;|&nbsp; Mínimo: <strong>{{ seleccionado?.minimo }}</strong>
+
+&nbsp;|&nbsp; Máximo: <strong>{{ seleccionado?.stockMaximo }}</strong>
+
+</div>
+
+<footer class="confirm-actions">
+
+<button class="confirm-btn cancel" type="button" (click)="onCancel()">Cancelar</button>
+
+<button class="confirm-btn primary" type="submit" [disabled]="guardando || form.invalid">
+
+{{ guardando ? 'Registrando...' : 'Registrar' }}
+
+</button>
+
+</footer>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===== END PATCH ===== -->
