@@ -78,4 +78,24 @@ private base = `${this.apiRoot}/productos`;
   crearProducto(body: ProductoCreate): Observable<Producto> {
     return this.http.post<Producto>('/api/productos', body);
   }
+
+  /** PATCH parcial de un producto (sin SKU ni stock). */
+  actualizarProducto(
+    id: string,
+    body: Partial<{
+      nombre: string;
+      categoria: string;
+      descripcion: string | null;
+      precioUnitario: number;
+      minimo: number;
+      stockMaximo: number;
+    }>
+  ): Observable<Producto> {
+    return this.http.patch<Producto>(`/api/productos/${id}`, body);
+  }
+
+  /** DELETE producto por id. */
+  eliminarProducto(id: string): Observable<{ message?: string; id?: string }> {
+    return this.http.delete<{ message?: string; id?: string }>(`/api/productos/${id}`);
+  }
 }

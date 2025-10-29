@@ -38,6 +38,10 @@
 
 .btn-icon.del{ background:#ffecec; }
 
+.btn-icon.edit::before { content: "✏️"; }
+
+.btn-icon.del::before { content: "🗑️"; }
+
 .btn-icon:hover{ filter:brightness(1.03); }
 
 .empty{ text-align:center; color:#9ca3af; padding:22px; }

@@ -29,9 +29,10 @@ export class InventarioComponent implements OnInit {
   // datos
   productos: (Producto & { estado?: Estado })[] = [];
   filtrados: (Producto & { estado?: Estado })[] = [];
+  editTarget?: Producto;
 
   constructor(
-    private api: ProductosService,
+    private productosService: ProductosService,
     private ws: WebSocketService,
     private auth: AuthService
   ) {}
@@ -52,7 +53,7 @@ export class InventarioComponent implements OnInit {
   cargar(): void {
     this.cargando = true;
     const q = (this.buscando || '').trim();
-    const src$ = q ? this.api.buscar(q) : this.api.listarTodos();
+    const src$ = q ? this.productosService.buscar(q) : this.productosService.listarTodos();
     src$.subscribe({
       next: (list) => {
         const arr = Array.isArray(list) ? list : [];
@@ -84,15 +85,28 @@ export class InventarioComponent implements OnInit {
   }
 
   // Botones (solo visual por ahora; no se toca navegación)
-  crearProducto(): void { this.modalOpen = true; }
-  editar(p: Producto): void {/* future nav */}
-  eliminar(p: Producto): void {/* future action */}
+  crearProducto(): void { this.editTarget = undefined; this.modalOpen = true; }
+  editar(p: Producto): void {
+if (!this.canManageProductos) { return; }
+this.editTarget = p;
+this.modalOpen = true;
+}
+  eliminar(p: Producto): void {
+if (!this.canManageProductos) { return; }
+const ok = window.confirm(`¿Eliminar el producto "${p.nombre}" (SKU ${p.sku})? Esta acción no se puede deshacer.`);
+if (!ok) { return; }
+this.cargando = true;
+    this.productosService.eliminarProducto(p.id!)
+     .subscribe({
+next: () => { this.cargando = false; /* la lista se actualiza por WS */ },
+error: (e) => { this.cargando = false; console.error(e); }
+});}
 
-  onModalClosed() { this.modalOpen = false; }
+  onModalClosed() { this.modalOpen = false; this.editTarget = undefined; }
 
   trackById(index: number, p: any) {
     return p?.id ?? p?.sku ?? index;
   }
 
-  onModalSaved()  { /* no hace falta recargar: WS lo hará; opcional this.cargar(); */ }
+  onModalSaved()  { this.editTarget = undefined; /* WS actualiza */ }
 }

@@ -2,14 +2,14 @@
 <div *ngIf="open" class="pm-overlay" (click)="onCancel()" (keydown)="esc($event)" tabindex="0">
   <div class="pm-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
     <header class="pm-header">
-      <h3 class="pm-title">Nuevo Producto</h3>
+      <h3 class="pm-title">{{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
       <button type="button" class="pm-close" (click)="onCancel()">&times;</button>
     </header>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="pm-body">
       <div class="pm-row pm-2cols">
         <div class="pm-field">
           <label>SKU</label>
-          <input type="text" formControlName="sku" placeholder="SKU-001" />
+          <input type="text" formControlName="sku" placeholder="SKU-001" [readonly]="isEdit" />
         </div>
         <div class="pm-field">
           <label>Nombre del Producto</label>

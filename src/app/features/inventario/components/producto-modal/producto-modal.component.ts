@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductosService, ProductoCreate } from '../../services/productos.service';
+import { ProductosService, ProductoCreate, Producto } from '../../services/productos.service'; // Asegurar import de Producto
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 })
 export class ProductoModalComponent implements OnChanges {
   @Input() open = false;                // visibilidad
+  @Input() producto?: Producto;                 // <-- NUEVO: producto en edición
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
@@ -34,13 +35,17 @@ export class ProductoModalComponent implements OnChanges {
   // Sugerencias
   sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
-  constructor(private fb: FormBuilder, private productosService: ProductosService, private auth: AuthService) {
-    this.form = this.fb.nonNullable.group({
+  constructor(
+    private productosService: ProductosService,
+    private auth: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
-      categoria: [''],
-      minimo: this.fb.nonNullable.control({ value: 10, disabled: true }),
-      stockMaximo: [500, [Validators.required, Validators.min(10)]],
+      categoria: ['', [Validators.required]],
+      minimo: [0, [Validators.required, Validators.min(0)]],
+      stockMaximo: [0, [Validators.required, Validators.min(0)]],
       stock: [0, [Validators.required, Validators.min(0)]],
       precioUnitario: [0, [Validators.required, Validators.min(0)]],
       descripcion: ['']
@@ -51,71 +56,78 @@ export class ProductoModalComponent implements OnChanges {
     return this.auth.canManageProductos();
   }
 
+  get isEdit(): boolean { return !!this.producto?.id; }
+
   esc(e: KeyboardEvent) {
     if (e.key === 'Escape') this.onCancel();
   }
 
-  onCancel(): void {
-    if (this.guardando) return;
-    this.resetForm();            //  limpia siempre
-    this.close.emit();           //  cierra modal en el padre
-  }
+  onCancel() { this.close.emit(); }
 
-  //  Cada vez que el modal se abre, arrancar limpio
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['open']?.currentValue === true) {
-      this.resetForm();
+  ngOnChanges(ch: SimpleChanges): void {
+    if (ch['producto'] && this.producto && this.open) {
+      // Pre-carga al abrir en edición (SKU queda solo lectura en HTML)
+      this.form.patchValue({
+        sku: this.producto.sku,
+        nombre: this.producto.nombre,
+        categoria: this.producto.categoria,
+        minimo: this.producto.minimo,
+        stockMaximo: this.producto.stockMaximo,
+        stock: this.producto.stock ?? 0,
+        precioUnitario: this.producto.precioUnitario,
+        descripcion: this.producto.descripcion ?? ''
+      });
     }
   }
 
-  //  Reset centralizado (valores por defecto + pristine/untouched)
-  private resetForm(): void {
+  resetForm(): void {
     this.form.reset({
       sku: '',
       nombre: '',
       categoria: '',
-      minimo: { value: 10, disabled: true },
-      stockMaximo: 500,
+      minimo: 0,
+      stockMaximo: 0,
       stock: 0,
       precioUnitario: 0,
       descripcion: ''
     });
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
   }
 
+
+
   onSubmit(): void {
-    if (!this.canManageProductos) { return; }  // corta ejecución para operador
-    if (this.guardando || this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
+    if (!this.canManageProductos) { return; }
+    if (this.form.invalid) { return; }
     this.guardando = true;
-    const v = this.form.getRawValue();
-    const payload: ProductoCreate = {
-      sku: (v.sku ?? '').trim(),
-      nombre: (v.nombre ?? '').trim(),
-      categoria: v.categoria?.trim() ?? '',
-      minimo: Number(v.minimo ?? 10),
-      stock: Number(v.stock ?? 0),
-      stockMaximo: Number(v.stockMaximo ?? 0),
-      precioUnitario: Number(v.precioUnitario ?? 0),
-      descripcion: (v.descripcion ?? '').trim() || null
-    };
-
-    this.productosService.crearProducto(payload).subscribe({
-      next: () => {
-        this.guardando = false;
-        this.resetForm();        //  deja listo para próxima apertura
-        this.saved.emit();       // (opcional) notifica éxito
-        this.close.emit();       // cierra; la lista se actualiza por WS
-      },
-      error: (e) => {
-        this.guardando = false;
-        console.error(e);
-        // mantener el formulario para correcciones del usuario
-      }
-    });
+    if (this.isEdit) {
+      const id = this.producto!.id!;
+      // PATCH parcial (sin sku ni stock)
+      const patch: Partial<{
+        nombre: string;
+        categoria: string;
+        descripcion: string | null;
+        precioUnitario: number;
+        minimo: number;
+        stockMaximo: number;
+      }> = {
+        nombre: this.form.value.nombre,
+        categoria: this.form.value.categoria,
+        minimo: this.form.value.minimo,
+        stockMaximo: this.form.value.stockMaximo,
+        precioUnitario: this.form.value.precioUnitario,
+        descripcion: this.form.value.descripcion ?? null
+      };
+      this.productosService.actualizarProducto(id, patch).subscribe({
+        next: () => { this.guardando = false; this.saved.emit(); this.close.emit(); },
+        error: (e) => { this.guardando = false; console.error(e); }
+      });
+    } else {
+      // Crear (como estaba)
+      const payload: ProductoCreate = this.form.value;
+      this.productosService.crearProducto(payload).subscribe({
+        next: () => { this.guardando = false; this.resetForm(); this.saved.emit(); this.close.emit(); },
+        error: (e) => { this.guardando = false; console.error(e); }
+      });
+    }
   }
 }

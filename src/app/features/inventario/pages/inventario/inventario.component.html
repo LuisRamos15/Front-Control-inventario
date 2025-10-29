@@ -60,10 +60,10 @@
                  }}
                </span>
              </td>
-             <td class="num">
-               <button class="btn-icon edit" (click)="editar(p!)" title="Editar"></button>
-               <button class="btn-icon del" (click)="eliminar(p!)" title="Eliminar"></button>
-             </td>
+              <td class="num">
+                <button class="btn-icon edit" title="Editar" *ngIf="canManageProductos" (click)="editar(p!)"></button>
+                <button class="btn-icon del" title="Eliminar" *ngIf="canManageProductos" (click)="eliminar(p!)"></button>
+              </td>
            </tr>
          </tbody>
        </table>
@@ -72,8 +72,9 @@
     </div>
  </div>
 
-<app-producto-modal
-  [open]="modalOpen"
-  (close)="onModalClosed()"
-  (saved)="onModalSaved()">
-</app-producto-modal>
+ <app-producto-modal
+   [open]="modalOpen"
+   [producto]="editTarget"
+   (close)="onModalClosed()"
+   (saved)="onModalSaved()">
+ </app-producto-modal>
