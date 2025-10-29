@@ -1,0 +1,41 @@
+<div class="alerts-container">
+  <div class="tabs">
+    <button [class.active]="tab() === 'TODAS'" (click)="tab.set('TODAS')">Todas ({{ (countTodas$|async) ?? 0 }})</button>
+    <button [class.active]="tab() === 'ACTIVAS'" (click)="tab.set('ACTIVAS')">Activas ({{ (countActivas$|async) ?? 0 }})</button>
+    <button [class.active]="tab() === 'CRITICAS'" (click)="tab.set('CRITICAS')">Críticas ({{ (countCriticas$|async) ?? 0 }})</button>
+    <button [class.active]="tab() === 'RESUELTAS'" (click)="tab.set('RESUELTAS')">Resueltas ({{ (countResueltas$|async) ?? 0 }})</button>
+  </div>
+
+  <div class="list">
+    <ng-container *ngIf="alerts$ | async as list">
+      <div *ngFor="let a of alertsFiltradas(list)" class="card" [ngClass]="a.nivel.toLowerCase()">
+        <div class="icon" [ngClass]="a.nivel.toLowerCase()"></div>
+        <div class="body">
+          <div class="title">
+            <span class="msg">{{ a.mensaje }}</span>
+            <span class="chip level" [ngClass]="a.nivel.toLowerCase()">
+              {{ a.nivel === 'CRITICA' ? 'CRíTICA' : (a.nivel === 'ADVERTENCIA' ? 'ADVERTENCIA' : 'INFO') }}
+            </span>
+            <span class="chip status" [ngClass]="{'ok': a.status === 'RESUELTA'}">
+              {{ a.status === 'RESUELTA' ? 'RESUELTA' : (a.status === 'RECONOCIDA' ? 'RECONOCIDA' : 'NUEVA') }}
+            </span>
+          </div>
+          <div class="meta">
+            <span>Stock actual: <b>{{ a.stock }}</b></span>
+            <span>| Mínimo requerido: <b>{{ a.minimo }}</b></span>
+            <span>| SKU: <b>{{ a.sku }}</b></span>
+            <span>| Creado: {{ a.fecha | date:'yyyy-MM-dd HH:mm' }}</span>
+            <span *ngIf="a.resolvedAt">| Resuelto: {{ a.resolvedAt | date:'yyyy-MM-dd HH:mm' }}</span>
+          </div>
+          <div class="actions" *ngIf="isAdminOrSupervisor">
+            <button class="btn" [disabled]="a.status === 'RESUELTA'" (click)="reconocer(a)">Reconocer</button>
+            <button class="btn primary" [disabled]="a.status === 'RESUELTA'" (click)="resolver(a)">Resolver</button>
+          </div>
+        </div>
+      </div>
+      <div class="empty" *ngIf="!alertsFiltradas(list).length">
+        No hay alertas para esta vista.
+      </div>
+    </ng-container>
+  </div>
+</div>

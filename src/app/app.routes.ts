@@ -25,16 +25,21 @@ export const routes: Routes = [
              .then(m => m.InventarioComponent),
          title: 'Inventario'
        },
-       {
-         path: 'movimientos',
-         loadComponent: () =>
-           import('./features/movimientos/pages/movimientos/movimientos.component')
-             .then(c => c.MovimientosComponent),
-         title: 'Movimientos'
-       },
-       // { path: 'alertas', component: AlertasComponent },
-      // { path: 'alertas', component: AlertasComponent },
-      // { path: 'reportes', component: ReportesComponent },
+        {
+          path: 'movimientos',
+          loadComponent: () =>
+            import('./features/movimientos/pages/movimientos/movimientos.component')
+              .then(c => c.MovimientosComponent),
+          title: 'Movimientos'
+        },
+        {
+          path: 'alertas',
+          loadComponent: () =>
+            import('./features/alertas/alert-center.component')
+              .then(m => m.AlertCenterComponent),
+          title: 'Alertas'
+        },
+       // { path: 'reportes', component: ReportesComponent },
        { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
      ],
    },

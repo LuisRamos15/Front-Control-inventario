@@ -135,4 +135,9 @@ export class AuthService {
   canOpenMovimientoModal(): boolean {
     return this.isAdminOrSupervisor() || this.isOperator();
   }
+
+  hasAnyAuthority(list: string[]): boolean {
+    const auths = (this.getRoles() || []).map((s: string) => s.toUpperCase());
+    return list.some(x => auths.includes(x.toUpperCase()));
+  }
 }
