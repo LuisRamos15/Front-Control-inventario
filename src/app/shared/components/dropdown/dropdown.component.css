@@ -1,0 +1,17 @@
+.dropdown { position: relative; }
+
+.dropdown .dropdown-menu {
+  position: absolute; top: 100%; right: 0; min-width: 180px;
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+  padding: 6px; display: none; z-index: 10;
+  box-shadow: 0 8px 24px rgba(16,24,40,.12);
+}
+
+.dropdown:hover .dropdown-menu { display: block; }
+
+.dropdown-item {
+  width: 100%; text-align: left; background: transparent; border: 0;
+  padding: 8px 10px; border-radius: 8px; cursor: pointer;
+}
+
+.dropdown-item:hover { background: #f3f4f6; }

@@ -1,0 +1,6 @@
+<div class="dropdown">
+  <button>Dropdown</button>
+  <div class="dropdown-menu">
+    <button *ngFor="let item of items" class="dropdown-item" (click)="selectItem(item)">{{ item }}</button>
+  </div>
+</div>

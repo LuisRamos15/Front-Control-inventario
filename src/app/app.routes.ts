@@ -39,7 +39,13 @@ export const routes: Routes = [
               .then(m => m.AlertCenterComponent),
           title: 'Alertas'
         },
-       // { path: 'reportes', component: ReportesComponent },
+        {
+          path: 'reportes',
+          loadChildren: () =>
+            import('./features/reportes/reportes.module')
+              .then(m => m.ReportesModule),
+          title: 'Reportes'
+        },
        { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
      ],
    },
