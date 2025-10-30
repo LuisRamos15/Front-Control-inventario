@@ -57,6 +57,10 @@ export class AuthService {
   private userSubject = new BehaviorSubject<{username?: string; roles: AppRole[]}>({ roles: [] });
   user$ = this.userSubject.asObservable();
 
+  get currentUser() {
+    return this.userSubject.value;
+  }
+
   // Llamar a esto cuando guardes/borres token (después de login/logout)
   refreshFromToken(): void {
     const token = this.getToken();
@@ -139,5 +143,9 @@ export class AuthService {
   hasAnyAuthority(list: string[]): boolean {
     const auths = (this.getRoles() || []).map((s: string) => s.toUpperCase());
     return list.some(x => auths.includes(x.toUpperCase()));
+  }
+
+  hasRole(role: string): boolean {
+    return this.getRoles().includes(role as AppRole);
   }
 }

@@ -3,6 +3,8 @@ import { Client, Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
+import { AuthService } from './auth.service';
+import { ToastService } from '../../shared/ui/toast/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +15,13 @@ export class WebSocketService {
   private movimientosSubject = new Subject<any>();
   private productosSubject = new Subject<any>();
 
+  private alertasSubscribed = false;
+
   public alertas$ = this.alertasSubject.asObservable();
   public movimientos$ = this.movimientosSubject.asObservable();
   public productos$ = this.productosSubject.asObservable();
 
-  constructor() {
+  constructor(private auth: AuthService, private toast: ToastService) {
     this.client = new Client({
       webSocketFactory: () => new SockJS(environment.wsUrl),
       debug: (str) => console.log(str),
@@ -29,9 +33,25 @@ export class WebSocketService {
     this.client.onConnect = (frame) => {
       console.log('Connected: ' + frame);
 
-      this.client.subscribe('/topic/alertas', (message) => {
-        this.alertasSubject.next(JSON.parse(message.body));
-      });
+      if (!this.alertasSubscribed) {
+        this.alertasSubscribed = true;
+        this.client.subscribe('/topic/alertas', (message) => {
+          const payload = JSON.parse(message.body);
+          this.alertasSubject.next(payload);
+
+          // Toast SOLO si es ADMIN:
+          if (this.auth.hasRole('ADMIN')) {
+            const nombre = payload?.productoNombre || 'Producto';
+            const sku = payload?.sku ? ` (${payload.sku})` : '';
+            const stock = payload?.stock ?? '-';
+            const minimo = payload?.minimo ?? '-';
+            this.toast.warning(
+              `Stock bajo para ${nombre}${sku}. Stock: ${stock}, Mínimo: ${minimo}`,
+              'Stock bajo'
+            );
+          }
+        });
+      }
 
       this.client.subscribe('/topic/movimientos', (message) => {
         this.movimientosSubject.next(JSON.parse(message.body));

@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { WebSocketService } from './websocket.service';
+import { ToastService } from '../../features/movimientos/components/ui/toast/toast.service';
+import { AuthService } from './auth.service';
 
 export type AlertaNivel = 'CRITICA' | 'ADVERTENCIA' | 'INFO';
 
@@ -43,7 +45,9 @@ export class AlertsService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly ws: WebSocketService
+    private readonly ws: WebSocketService,
+    private readonly toast: ToastService,
+    private readonly auth: AuthService
   ) {}
 
   /** Llamar UNA sola vez (por ejemplo, en AppComponent ngOnInit) */
@@ -82,6 +86,18 @@ export class AlertsService {
     }
     this._list$.next(list);
     this.save(list);
+
+    // Add toast for low stock alert only for ADMIN users
+    if (this.auth.hasRole('ADMIN')) {
+      const nombre = incoming?.productoNombre || 'Producto';
+      const sku = incoming?.sku ? ` (${incoming.sku})` : '';
+      const stock = incoming?.stock ?? '-';
+      const minimo = incoming?.minimo ?? '-';
+      this.toast.warning(
+        `Stock bajo para ${nombre}${sku}. Stock: ${stock}, Mínimo: ${minimo}`,
+        'Stock bajo',
+      );
+    }
   }
 
   private load(): AlertaItem[] {

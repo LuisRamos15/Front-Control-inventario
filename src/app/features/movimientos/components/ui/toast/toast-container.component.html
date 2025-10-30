@@ -1,0 +1,17 @@
+<div class="invpro-toast-container" aria-live="polite" aria-atomic="true">
+  <div class="invpro-toast"
+    *ngFor="let t of toasts$ | async; trackBy: trackById"
+    [class.is-warning]="t.variant === 'warning'"
+    [class.is-success]="t.variant === 'success'"
+    [class.is-error]="t.variant === 'error'">
+    <div class="invpro-toast__header">
+      <div class="invpro-toast__title">
+        {{ t.title || 'Notificación' }}
+      </div>
+      <button class="invpro-toast__close" (click)="close(t.id)" aria-label="Cerrar"></button>
+    </div>
+    <div class="invpro-toast__body">
+      {{ t.message }}
+    </div>
+  </div>
+</div>

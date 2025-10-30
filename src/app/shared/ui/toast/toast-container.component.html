@@ -1,0 +1,10 @@
+<div class="toast-host" aria-live="polite" aria-atomic="true">
+  <div class="toast" *ngFor="let t of toasts" [class]="t.type">
+    <div class="icon">{{ icon(t.type) }}</div>
+    <div class="content">
+      <div class="title" *ngIf="t.title">{{ t.title }}</div>
+      <div class="message">{{ t.message }}</div>
+    </div>
+    <button class="close" type="button" (click)="dismiss(t.id)" aria-label="Cerrar"></button>
+  </div>
+</div>
