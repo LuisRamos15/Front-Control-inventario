@@ -1,0 +1,39 @@
+:host { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; }
+
+.overlay { position: fixed; inset:0; background: rgba(0,0,0,.35); backdrop-filter: blur(2px); }
+
+.dialog {
+
+position: relative; width: min(460px, 92vw); background: #fff; border-radius: 16px;
+
+box-shadow: 0 10px 30px rgba(0,0,0,.2); padding: 16px 16px 12px; animation: pop .18s ease-out;
+
+font-family: inherit;
+
+}
+
+@keyframes pop { from { transform: scale(.96); opacity:.8 } to { transform: scale(1); opacity:1 } }
+
+.dialog-header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+
+.dialog-header h3 { margin:0; font-size:1.05rem; font-weight:700; }
+
+.icon-btn { border:0; background:transparent; font-size:18px; line-height:1; cursor:pointer; opacity:.7 }
+
+.icon-btn:hover { opacity:1 }
+
+.dialog-body { margin: 10px 2px 14px; color:#344; line-height:1.35; }
+
+.dialog-footer { display:flex; justify-content:flex-end; gap:8px; }
+
+.btn-primary {
+
+border:0; padding:10px 14px; border-radius:10px; cursor:pointer;
+
+background:#2458ff; color:#fff; font-weight:600;
+
+box-shadow: 0 4px 12px rgba(36,88,255,.25);
+
+}
+
+.btn-primary:hover { filter: brightness(1.04); }

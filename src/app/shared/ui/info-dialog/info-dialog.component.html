@@ -1,0 +1,14 @@
+<div *ngIf="open" class="overlay" (click)="onClose()"></div>
+
+<div *ngIf="open" class="dialog" role="dialog" aria-modal="true" aria-labelledby="info-title">
+  <div class="dialog-header">
+    <h3 id="info-title">{{ title }}</h3>
+    <button class="icon-btn" (click)="onClose()" aria-label="Cerrar">×</button>
+  </div>
+  <div class="dialog-body">
+    <p>{{ message }}</p>
+  </div>
+  <div class="dialog-footer">
+    <button class="btn btn-primary" (click)="onClose()">{{ primaryLabel }}</button>
+  </div>
+</div>

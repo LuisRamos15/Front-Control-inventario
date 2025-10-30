@@ -47,7 +47,7 @@ export class ProductoModalComponent implements OnChanges {
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],
       categoria: ['', [Validators.required]],
-      minimo: [0, [Validators.required, Validators.min(0)]],
+      minimo: [{ value: 10, disabled: true }],
       stockMaximo: [0, [Validators.required, Validators.min(0)]],
       stock: [0, [Validators.required, Validators.min(0)]],
       precioUnitario: [0, [Validators.required, Validators.min(0)]],
@@ -68,18 +68,22 @@ export class ProductoModalComponent implements OnChanges {
   onCancel() { this.close.emit(); }
 
   ngOnChanges(ch: SimpleChanges): void {
-    if (ch['producto'] && this.producto && this.open) {
+    if (ch['open'] && this.open && !this.producto) {
+      // Reset para nuevo producto
+      this.resetForm();
+    } else if (ch['producto'] && this.producto && this.open) {
       // Pre-carga al abrir en edición (SKU queda solo lectura en HTML)
       this.form.patchValue({
         sku: this.producto.sku,
         nombre: this.producto.nombre,
         categoria: this.producto.categoria,
-        minimo: this.producto.minimo,
+        minimo: 10, // Forzar a 10
         stockMaximo: this.producto.stockMaximo,
         stock: this.producto.stock ?? 0,
         precioUnitario: this.producto.precioUnitario,
         descripcion: this.producto.descripcion ?? ''
       });
+      this.form.get('minimo')!.disable();
     }
   }
 
@@ -88,12 +92,13 @@ export class ProductoModalComponent implements OnChanges {
       sku: '',
       nombre: '',
       categoria: '',
-      minimo: 0,
       stockMaximo: 0,
       stock: 0,
       precioUnitario: 0,
       descripcion: ''
     });
+    this.form.get('minimo')!.setValue(10);
+    this.form.get('minimo')!.disable();
   }
 
 
@@ -102,6 +107,7 @@ export class ProductoModalComponent implements OnChanges {
     if (!this.canManageProductos) { return; }
     if (this.form.invalid) { return; }
     this.guardando = true;
+    const raw = this.form.getRawValue();
     if (this.isEdit) {
       const id = this.producto!.id!;
       // PATCH parcial (sin sku ni stock)
@@ -113,20 +119,20 @@ export class ProductoModalComponent implements OnChanges {
         minimo: number;
         stockMaximo: number;
       }> = {
-        nombre: this.form.value.nombre,
-        categoria: this.form.value.categoria,
-        minimo: this.form.value.minimo,
-        stockMaximo: this.form.value.stockMaximo,
-        precioUnitario: this.form.value.precioUnitario,
-        descripcion: this.form.value.descripcion ?? null
+        nombre: raw.nombre,
+        categoria: raw.categoria,
+        minimo: 10, // Forzado
+        stockMaximo: raw.stockMaximo,
+        precioUnitario: raw.precioUnitario,
+        descripcion: raw.descripcion ?? null
       };
       this.productosService.actualizarProducto(id, patch).subscribe({
         next: () => { this.guardando = false; this.saved.emit(); this.close.emit(); },
         error: (e) => { this.guardando = false; console.error(e); }
       });
     } else {
-      // Crear (como estaba)
-      const payload: ProductoCreate = this.form.value;
+      // Crear
+      const payload: ProductoCreate = { ...raw, minimo: 10 }; // Forzado
       this.productosService.crearProducto(payload).subscribe({
         next: () => { this.guardando = false; this.resetForm(); this.saved.emit(); this.close.emit(); },
         error: (e) => { this.guardando = false; console.error(e); }

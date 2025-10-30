@@ -1,0 +1,14 @@
+<div class="invpro-modal-backdrop" *ngIf="visible" (click)="close()">
+  <div class="invpro-modal" (click)="$event.stopPropagation()">
+    <div class="invpro-modal__header">
+      <span class="invpro-modal__title">{{ title }}</span>
+      <button class="invpro-modal__close" (click)="close()" aria-label="Cerrar"></button>
+    </div>
+    <div class="invpro-modal__body">
+      <p>{{ message }}</p>
+    </div>
+    <div class="invpro-modal__footer">
+      <button class="invpro-btn" (click)="close()">Aceptar</button>
+    </div>
+  </div>
+</div>

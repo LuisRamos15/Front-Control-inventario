@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProductosService, Producto } from '../../../inventario/services/productos.service';
 import { MovimientosService, MovimientoCreate } from '../../services/movimientos.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { AlertModalService } from '../ui/alert-modal/alert-modal.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -26,12 +27,15 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
   resultados: Producto[] = [];
   seleccionado?: Producto;
 
-  constructor(
-    private fb: FormBuilder,
-    private productos: ProductosService,
-    private svc: MovimientosService,
-    private auth: AuthService
-  ) {
+
+
+   constructor(
+     private fb: FormBuilder,
+     private productos: ProductosService,
+     private svc: MovimientosService,
+     private auth: AuthService,
+     private alert: AlertModalService
+   ) {
     this.form = this.fb.group({
       tipo: ['SALIDA', [Validators.required]],
       productoId: ['', [Validators.required]],
@@ -75,27 +79,49 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
 
    onSubmit() {
 
-     if (this.form.invalid) return;
+      if (this.form.invalid) return;
 
-     const tipo = this.form.value.tipo as 'ENTRADA'|'SALIDA';
+      const tipo = this.form.value.tipo as 'ENTRADA'|'SALIDA';
 
-     if (!this.auth.canCreateMovimiento(tipo)) return;
+      if (!this.auth.canCreateMovimiento(tipo)) return;
 
-     const payload: MovimientoCreate = {
+        // Validación cliente
+        if (tipo === 'SALIDA' && this.seleccionado && this.seleccionado.stock !== undefined) {
+          if (this.form.value.cantidad > this.seleccionado.stock) {
+            this.alert.open({
+              title: 'Advertencia de stock',
+              message: `No se puede realizar la salida. Cantidad (${this.form.value.cantidad}) supera el stock actual (${this.seleccionado.stock}).`,
+              autoCloseMs: 4500
+            });
+            return;
+          }
+        } else if (tipo === 'ENTRADA' && this.seleccionado && this.seleccionado.stock !== undefined && this.seleccionado.stockMaximo !== null && this.seleccionado.stockMaximo !== undefined) {
+          const stockResultante = this.seleccionado.stock + this.form.value.cantidad;
+          if (stockResultante > this.seleccionado.stockMaximo) {
+            this.alert.open({
+              title: 'Advertencia de stock',
+              message: `No se puede realizar la entrada. El stock resultante (${stockResultante}) supera el máximo (${this.seleccionado.stockMaximo}).`,
+              autoCloseMs: 4500
+            });
+            return;
+          }
+        }
 
-       productoId: this.form.value.productoId,
+      const payload: MovimientoCreate = {
 
-       cantidad: this.form.value.cantidad,
+        productoId: this.form.value.productoId,
 
-       tipo
+        cantidad: this.form.value.cantidad,
 
-     };
+        tipo
 
-      this.saved.emit(payload);
+      };
 
-      this.close.emit();
+       this.saved.emit(payload);
 
-   }
+       this.close.emit();
+
+    }
 
   onCancel() {
     this.close.emit();
