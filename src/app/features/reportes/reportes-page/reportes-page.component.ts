@@ -1,13 +1,16 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { ReportesService } from '../reportes.service';
+import { LiveUpdatesService } from '../../../core/services/live-updates.service';
+import { DashboardService } from '../../../core/services/dashboard';
+import { TopProducto } from '../../../shared/models/dashboard.models';
 import { finalize } from 'rxjs/operators';
 import { Chart, ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-reportes-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgFor, NgIf, DecimalPipe],
   templateUrl: './reportes-page.component.html',
   styleUrls: ['./reportes-page.component.scss']
 })
@@ -17,6 +20,8 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   valorTotal = 0;
   productosBajos = 0;
   categorias = 0;
+  topProductos: TopProducto[] = [];
+  loadingTop = false;
 
   @ViewChild('trendCanvas', { static: false }) trendCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('consumoCanvas', { static: false }) consumoCanvas!: ElementRef<HTMLCanvasElement>;
@@ -26,7 +31,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   private consumoChart?: Chart;
   private rotacionChart?: Chart;
 
-  constructor(private reportes: ReportesService) {}
+  constructor(private reportes: ReportesService, private liveUpdates: LiveUpdatesService, private dashboardSrv: DashboardService) {}
 
   ngOnInit(): void {
     this.reportes.getResumenDashboard().subscribe({
@@ -59,6 +64,73 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       },
       error: (e) => console.error('Error al cargar resumen:', e)
+    });
+
+    // Cargar top productos
+    this.loadTopProductos();
+
+    // Initialize live updates
+    this.liveUpdates.init();
+
+    // Subscribe to live updates
+    this.liveUpdates.productos$().subscribe(() => {
+      // Re-calculate valorTotal and categorias
+      this.reportes.getProductos().subscribe(ps => {
+        this.valorTotal = (ps ?? []).reduce((acc, p) => {
+          const precio = Number(p?.precioUnitario) || 0;
+          const stock = Number(p?.stock) || 0;
+          return acc + (precio * stock);
+        }, 0);
+        const categoriasSet = new Set(
+          (ps ?? [])
+            .map(p => (p?.categoria ?? '').trim())
+            .filter(Boolean)
+        );
+        this.categorias = categoriasSet.size;
+      });
+    });
+
+    this.liveUpdates.movimientos$().subscribe(() => {
+      // Re-fetch and update charts
+      this.reportes.getMovimientosPorDia().subscribe(dias => {
+        const labels = dias.map(d => d.fecha);
+        const entradas = dias.map(d => d.entradas ?? 0);
+        const salidas = dias.map(d => d.salidas ?? 0);
+        if (this.trendChart) {
+          this.trendChart.data.labels = labels;
+          this.trendChart.data.datasets[0].data = entradas;
+          this.trendChart.data.datasets[1].data = salidas;
+          this.trendChart.update();
+        }
+        const salidas2 = dias.map(d => d.salidas ?? 0);
+        const mm7 = this.movingAverage(salidas2, 7);
+        if (this.rotacionChart) {
+          this.rotacionChart.data.labels = labels;
+          this.rotacionChart.data.datasets[0].data = salidas2;
+          this.rotacionChart.data.datasets[1].data = mm7;
+          this.rotacionChart.update();
+        }
+      });
+      this.reportes.getTopProductos('SALIDA', 5).subscribe(items => {
+        const labels = items.map(x => x.nombre || x.sku || 'N/A');
+        const data = items.map(x => x.cantidad ?? 0);
+        if (this.consumoChart) {
+          this.consumoChart.data.labels = labels;
+          this.consumoChart.data.datasets[0].data = data;
+          this.consumoChart.update();
+        }
+      });
+    });
+  }
+
+  private loadTopProductos(): void {
+    this.loadingTop = true;
+    const desde = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const hasta = new Date().toISOString().split('T')[0];
+    this.dashboardSrv.getTopProductos('SALIDA', 5, desde, hasta).subscribe({
+      next: (data) => { this.topProductos = Array.isArray(data) ? data : []; },
+      error: (_) => { this.topProductos = []; },
+      complete: () => { this.loadingTop = false; }
     });
   }
 

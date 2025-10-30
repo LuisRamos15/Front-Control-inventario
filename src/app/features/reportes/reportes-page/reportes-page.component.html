@@ -60,19 +60,17 @@
        <div class="chart-placeholder">
          <canvas #consumoCanvas aria-label="Top 5 Salidas"></canvas>
        </div>
-      <div class="top5 mt-16">
-        <h3 class="muted">Top 5 Productos Más Vendidos:</h3>
-        <ol class="mt-8">
-          <!-- Estos ítems son estáticos/placeholder, no rompen nada;
-          si ya existe un servicio de productos/movimientos,
-          se puede poblar después sin tocar la UI -->
-          <li>Jabón en Barra  1,250 unidades</li>
-          <li>Detergente Líquido  980 unidades</li>
-          <li>Paño de Limpieza  750 unidades</li>
-          <li>Limpiador Desengrasante  520 unidades</li>
-          <li>Aceite Premium  380 unidades</li>
-        </ol>
-      </div>
+        <div class="top5 mt-16">
+          <strong>Top 5 Productos Más Vendidos:</strong>
+          <div *ngIf="loadingTop" class="text-gray-500 mt-1">Cargando</div>
+          <ul *ngIf="!loadingTop" class="list-decimal ml-4 mt-1">
+            <li *ngFor="let p of topProductos; index as i">
+              {{ p.nombre || 'Producto' }}
+              <span class="text-gray-500">({{ p.cantidad | number:'1.0-0' }} unidades)</span>
+            </li>
+            <li *ngIf="topProductos.length === 0" class="text-gray-500 list-none ml-0">Sin datos para el periodo.</li>
+          </ul>
+        </div>
     </div>
 
     <div class="card p-16">
