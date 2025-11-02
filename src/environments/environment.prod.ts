@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://TU-DOMINIO/api',
-  wsUrl: 'wss://TU-DOMINIO/ws'
+  apiUrl: 'https://localhost:8080/api',
+  wsUrl: 'wss://localhost:8080/ws'
 };

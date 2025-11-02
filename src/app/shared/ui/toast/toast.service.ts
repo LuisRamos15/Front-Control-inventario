@@ -8,7 +8,7 @@ export interface Toast {
   type: ToastType;
   title?: string;
   message: string;
-  timeout?: number; // ms
+  timeout?: number; 
   key?: string;
 }
 
@@ -19,19 +19,19 @@ export class ToastService {
 
   private seq = 1;
 
-  /** Evita mostrar el mismo toast mientras siga visible */
+  
   private activeKeys = new Set<string>();
 
   show(type: ToastType, message: string, title?: string, timeout = 4200) {
     const key = `${type}|${title ?? ''}|${message}`;
-    if (this.activeKeys.has(key)) return;           // <<--- evita duplicados
+    if (this.activeKeys.has(key)) return;           
     this.activeKeys.add(key);
     const toast: Toast = { id: this.seq++, type, title, message, timeout };
     this._toasts$.next([...this._toasts$.value, toast]);
     if (timeout && timeout > 0) {
       setTimeout(() => {
         this.dismiss(toast.id);
-        this.activeKeys.delete(key);                // libera la llave al cerrar
+        this.activeKeys.delete(key);                
       }, timeout);
     }
   }
@@ -49,3 +49,4 @@ export class ToastService {
     this._toasts$.next([]);
   }
 }
+

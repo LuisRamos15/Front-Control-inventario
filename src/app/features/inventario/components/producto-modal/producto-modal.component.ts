@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductosService, ProductoCreate, Producto } from '../../services/productos.service'; // Asegurar import de Producto
-import { AuthService } from '../../../../core/services/auth.service';
+import { ProductosService, ProductoCreate, Producto } from '../../services/productos.service'; 
+import { AuthService } from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-producto-modal',
@@ -12,8 +12,8 @@ import { AuthService } from '../../../../core/services/auth.service';
   styleUrls: ['./producto-modal.component.css']
 })
 export class ProductoModalComponent implements OnChanges {
-  @Input() open = false;                // visibilidad
-  @Input() producto?: Producto;                 // <-- NUEVO: producto en edición
+  @Input() open = false;                
+  @Input() producto?: Producto;                 
   @Output() close = new EventEmitter<void>();
   @Output() saved = new EventEmitter<void>();
 
@@ -23,7 +23,7 @@ export class ProductoModalComponent implements OnChanges {
   deleteTarget?: Producto;
   form: FormGroup;
 
-  // Valores por defecto para reapertura limpia
+  
   private readonly defaults = {
     sku: '',
     nombre: '',
@@ -35,7 +35,7 @@ export class ProductoModalComponent implements OnChanges {
     descripcion: ''
   };
 
-  // Sugerencias
+  
   sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
   constructor(
@@ -69,15 +69,15 @@ export class ProductoModalComponent implements OnChanges {
 
   ngOnChanges(ch: SimpleChanges): void {
     if (ch['open'] && this.open && !this.producto) {
-      // Reset para nuevo producto
+      
       this.resetForm();
     } else if (ch['producto'] && this.producto && this.open) {
-      // Pre-carga al abrir en edición (SKU queda solo lectura en HTML)
+      
       this.form.patchValue({
         sku: this.producto.sku,
         nombre: this.producto.nombre,
         categoria: this.producto.categoria,
-        minimo: 10, // Forzar a 10
+        minimo: 10, 
         stockMaximo: this.producto.stockMaximo,
         stock: this.producto.stock ?? 0,
         precioUnitario: this.producto.precioUnitario,
@@ -110,7 +110,7 @@ export class ProductoModalComponent implements OnChanges {
     const raw = this.form.getRawValue();
     if (this.isEdit) {
       const id = this.producto!.id!;
-      // PATCH parcial (sin sku ni stock)
+      
       const patch: Partial<{
         nombre: string;
         categoria: string;
@@ -121,7 +121,7 @@ export class ProductoModalComponent implements OnChanges {
       }> = {
         nombre: raw.nombre,
         categoria: raw.categoria,
-        minimo: 10, // Forzado
+        minimo: 10, 
         stockMaximo: raw.stockMaximo,
         precioUnitario: raw.precioUnitario,
         descripcion: raw.descripcion ?? null
@@ -131,8 +131,8 @@ export class ProductoModalComponent implements OnChanges {
         error: (e) => { this.guardando = false; console.error(e); }
       });
     } else {
-      // Crear
-      const payload: ProductoCreate = { ...raw, minimo: 10 }; // Forzado
+      
+      const payload: ProductoCreate = { ...raw, minimo: 10 }; 
       this.productosService.crearProducto(payload).subscribe({
         next: () => { this.guardando = false; this.resetForm(); this.saved.emit(); this.close.emit(); },
         error: (e) => { this.guardando = false; console.error(e); }
@@ -140,3 +140,4 @@ export class ProductoModalComponent implements OnChanges {
     }
   }
 }
+

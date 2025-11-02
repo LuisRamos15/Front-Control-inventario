@@ -5,5 +5,6 @@ export interface AlertaEvent {
   stock: number;
   minimo: number;
   nivel: 'STOCK_BAJO' | 'STOCK_CRITICO' | string;
-  fecha: string; // ISO
+  fecha: string; 
 }
+

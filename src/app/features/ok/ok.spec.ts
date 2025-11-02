@@ -21,3 +21,4 @@ describe('Ok', () => {
     expect(component).toBeTruthy();
   });
 });
+

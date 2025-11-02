@@ -7,9 +7,8 @@
    <div class="status status-indicator"><span class="dot"></span> En línea</div>
    <div class="user" (mouseenter)="open = true">
      <button class="user-btn" type="button" (click)="toggle()">
-       <span class="avatar">A</span>
-       <span class="name">{{ auth.getRoleLabel() ?? 'Usuario' }}</span>
-       <div class="status-indicator main-status"><span class="dot"></span> En línea</div>
+        <span class="avatar">A</span>
+        <div class="status-indicator main-status"><span class="dot"></span> {{ getUserRoleLabel() }} En línea</div>
        <span class="chev"></span>
      </button>
     <div class="menu" *ngIf="open" (mouseenter)="open = true" (mouseleave)="close()">

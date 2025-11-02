@@ -3,8 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { WebSocketService } from './websocket.service';
-import { ToastService } from '../../features/movimientos/components/ui/toast/toast.service';
-import { AuthService } from './auth.service';
+import { ToastService } from '../../shared/ui/toast/toast.service';
+import { AuthService } from '../auth/auth.service';
 
 export type AlertaNivel = 'CRITICA' | 'ADVERTENCIA' | 'INFO';
 
@@ -50,9 +50,9 @@ export class AlertsService {
     private readonly auth: AuthService
   ) {}
 
-  /** Llamar UNA sola vez (por ejemplo, en AppComponent ngOnInit) */
+
   initWsListener(): void {
-    // SUSCRIBIRSE a /topic/alertas usando la conexión existente
+
     this.ws.alertas$.subscribe((payload: any) => {
       try {
         const data = typeof payload === 'string' ? JSON.parse(payload) : payload;
@@ -63,7 +63,7 @@ export class AlertsService {
     });
   }
 
-  /** Inserta o actualiza por id (WS). No romper orden ni UI. */
+
   private upsertFromWs(incoming: Partial<AlertaItem>): void {
     const id = incoming.id ?? (globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
     const next: AlertaItem = {
@@ -87,7 +87,7 @@ export class AlertsService {
     this._list$.next(list);
     this.save(list);
 
-    // Add toast for low stock alert only for ADMIN users
+
     if (this.auth.hasRole('ADMIN')) {
       const nombre = incoming?.productoNombre || 'Producto';
       const sku = incoming?.sku ? ` (${incoming.sku})` : '';
@@ -117,7 +117,7 @@ export class AlertsService {
     this.save(list);
   }
 
-  // Métodos HTTP pensados para cuando el backend de alertas esté listo.
+
   reconocer(id: string) {
     return this.http.patch<AlertaItem>(`${this.baseUrl}/${id}/reconocer`, {});
   }
@@ -130,8 +130,9 @@ export class AlertsService {
     return this.http.get<any>(this.baseUrl, { params });
   }
 
-  // Keep the old method for compatibility
+
   recientes(limit = 3) {
     return this.list$.pipe(map(alerts => alerts.slice(0, limit)));
   }
 }
+

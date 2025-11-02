@@ -1,11 +1,11 @@
 import { Component, signal, OnInit, OnDestroy } from '@angular/core';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { DashboardService, Resumen, TopProducto, DiaMov } from './dashboard.service';
-import { AuthService } from '../../core/services/auth.service';
-import { WebSocketService } from '../../core/services/websocket.service';
+import { AuthService } from '../../core/auth/auth.service';
+import { WebSocketService } from '../../core/realtime/websocket.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
-import { AlertaEvent } from './models/alerta.model';
+import { AlertaEvent } from '../../shared/models/alerta.model';
 import { catchError, of } from 'rxjs';
 import { Subscription } from 'rxjs';
 
@@ -127,17 +127,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private topSig = signal<TopProducto[]>([]);
   top = () => this.topSig();
 
-  // --- Constante de zona horaria local ---
+  
   private readonly TZ = 'America/Bogota';
 
   private toLocalLabel(ymdUtc: string): string {
-    // construimos fecha asumiendo UTC para ese día y la mostramos en Bogotá
+    
     const d = new Date(`${ymdUtc}T00:00:00Z`);
-    // 'en-CA' devuelve YYYY-MM-DD; puedes usar 'es-CO' si prefieres 'DD/MM/AAAA'
+    
     return new Intl.DateTimeFormat('en-CA', { timeZone: this.TZ }).format(d);
   }
 
-  // Mapea una serie a labels locales Bogotá
+  
   private mapLabelsToLocal(serie: Array<{ fecha: string }>): string[] {
     return (serie ?? []).map(s => this.toLocalLabel(s.fecha));
   }
@@ -227,3 +227,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 }
+

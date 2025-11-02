@@ -5,7 +5,13 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": [],
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@core/*": ["app/core/*"],
+      "@shared/*": ["app/shared/*"],
+      "@features/*": ["app/features/*"],
+      "@models/*": ["app/shared/models/*"]
+    }
   },
   "include": [
     "src/**/*.ts"

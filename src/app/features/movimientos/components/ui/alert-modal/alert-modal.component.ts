@@ -26,3 +26,4 @@ export class AlertModalComponent implements OnInit {
     this.visible = false;
   }
 }
+

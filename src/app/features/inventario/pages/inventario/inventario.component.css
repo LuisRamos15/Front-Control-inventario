@@ -1,9 +1,9 @@
  :host { display:block; }
 
-/* Layout superior */
+
 .inv-wrap { padding: 12px; }
 
-/* Badge styles */
+
 .badge{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700; }
 
 .badge-critico{ background:#fee2e2; color:#b91c1c; }
@@ -95,7 +95,7 @@ box-shadow: 0 6px 14px rgba(30,80,214,.25);
 
 .inv-btn-primary:hover{ filter:brightness(1.03); }
 
-/* Card y tabla */
+
 
 .inv-card{
 
@@ -173,6 +173,7 @@ padding:10px 8px; border-bottom:1px solid #f3f4f6; font-size:14px; color:#111827
 
 .sku-chip {
   font-size: 12px;
-  color: #6b7280; /* gris suave */
+  color: #6b7280; 
 }
+
 

@@ -15,3 +15,4 @@ export interface Alerta {
   createdAt?: string;
   resolvedAt?: string;
 }
+

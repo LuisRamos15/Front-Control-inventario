@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AlertaEvent } from './models/alerta.model';
+import { AlertaEvent } from '../../shared/models/alerta.model';
 
 export interface Resumen {
   totalProductos: number;
@@ -41,3 +41,4 @@ export class DashboardService {
     return this.http.get<AlertaEvent[]>(`${this.base}/alertas`, { params });
   }
 }
+

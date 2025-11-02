@@ -1,9 +1,9 @@
 
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+
+
+
+
+
 @use '@angular/material' as mat;
 
 html {
@@ -18,22 +18,22 @@ html {
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
+  
+  
+  
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
+  
+  
+  
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
+  
   margin: 0;
 }
-/* You can add global styles to this file, and also import other style files */
+
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:#f6f8ff; }
@@ -59,7 +59,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:
 .mp-body select,
 .mp-body textarea {
   width: 100%;
-  border: 1px solid #e2e8f0; /* slate-200 */
+  border: 1px solid #e2e8f0; 
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 0.95rem;
@@ -77,7 +77,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:
 .mp-body input:focus,
 .mp-body select:focus,
 .mp-body textarea:focus {
-  border-color: #60a5fa; /* blue-400 */
+  border-color: #60a5fa; 
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
 }
 
@@ -116,21 +116,21 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background:
 }
 
 :root{
---sidenav-text: #cfe3ff;               /* texto normal */
---sidenav-text-active: #ffffff;        /* texto activo/hover */
---sidenav-hover-bg: rgba(255,255,255,.10); /* hover visible sobre fondo azul */
---sidenav-active-bg: rgba(255,255,255,.18);/* activo con más contraste */
+--sidenav-text: #cfe3ff;               
+--sidenav-text-active: #ffffff;        
+--sidenav-hover-bg: rgba(255,255,255,.10); 
+--sidenav-active-bg: rgba(255,255,255,.18);
 --sidenav-radius: 10px;
 }
 
-/* Contenedor del menú lateral */
+
 .sidenav{
 display: flex;
 flex-direction: column;
 gap: 6px;
 }
 
-/* Enlaces del menú lateral */
+
 .sidenav .sidenav-link {
 display: flex;
 align-items: center;

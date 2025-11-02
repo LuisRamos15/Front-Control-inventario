@@ -8,7 +8,7 @@ export class DialogService {
   constructor(private appRef: ApplicationRef, private injector: Injector) {}
 
   show(message: string, title = 'Aviso', primaryLabel = 'Aceptar') {
-    if (this.ref) this.close(); // evitar duplicados
+    if (this.ref) this.close(); 
 
     const comp = createComponent(InfoDialogComponent, { environmentInjector: this.appRef.injector, elementInjector: this.injector });
 
@@ -29,3 +29,4 @@ export class DialogService {
     this.ref = undefined;
   }
 }
+

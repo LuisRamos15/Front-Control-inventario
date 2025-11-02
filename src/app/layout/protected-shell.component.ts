@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet, Router } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { AuthService } from '../core/services/auth.service';
+import { AuthService } from '../core/auth/auth.service';
 
 @Component({
   standalone: true,
@@ -108,3 +108,4 @@ export class ProtectedShellComponent {
     this.router.navigate(['/login'], { replaceUrl: true });
   }
 }
+

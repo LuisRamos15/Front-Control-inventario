@@ -8,7 +8,7 @@ export class AlertModalService {
   constructor(private appRef: ApplicationRef) {}
 
   open(opts: { title?: string; message: string; autoCloseMs?: number }): void {
-    // Cerrar anterior si existe
+    
     this.close();
 
     const compRef = createComponent(AlertModalComponent, { environmentInjector: this.appRef.injector });
@@ -18,7 +18,7 @@ export class AlertModalService {
     compRef.instance.message = opts.message;
     compRef.instance.autoCloseMs = opts.autoCloseMs ?? 4500;
 
-    // Hook para destrucción al cerrar
+    
     const originalClose = compRef.instance.close.bind(compRef.instance);
     compRef.instance.close = () => {
       originalClose();
@@ -41,3 +41,4 @@ export class AlertModalService {
     this.close();
   }
 }
+

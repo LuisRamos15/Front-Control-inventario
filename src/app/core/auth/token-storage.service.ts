@@ -13,3 +13,4 @@ get(): string | null { return localStorage.getItem(KEY); }
 clear() { localStorage.removeItem(KEY); }
 
 }
+

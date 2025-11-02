@@ -1,8 +1,8 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { AlertsService } from '../../core/services/alerts.service';
-import { AuthService } from '../../core/services/auth.service';
+import { AlertsService } from '../../core/realtime/alerts.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { Alerta } from './alert.model';
 import { map } from 'rxjs/operators';
 
@@ -16,13 +16,13 @@ import { map } from 'rxjs/operators';
 export class AlertCenterComponent {
   isAdminOrSupervisor: boolean;
 
-  // estado de pestañas
+  
   tab = signal<'TODAS'|'ACTIVAS'|'CRITICAS'|'RESUELTAS'>('TODAS');
 
-  // lista reactiva
+  
   alerts$: Observable<Alerta[]>;
 
-  // contadores
+  
   countTodas$: Observable<number>;
   countActivas$: Observable<number>;
   countCriticas$: Observable<number>;
@@ -56,3 +56,4 @@ export class AlertCenterComponent {
     this.alerts.setStatus(a.id, 'RESUELTA');
   }
 }
+

@@ -14,7 +14,7 @@ private client!: Client;
 
 private subs: StompSubscription[] = [];
 
-// Canales que usaremos en la app
+
 
 private productosSubject = new Subject<any>();
 
@@ -39,19 +39,19 @@ this.client = new Client({
 
 webSocketFactory: () => new SockJS(wsUrl),
 
-reconnectDelay: 5000,           // reconecta solo
+reconnectDelay: 5000,           
 
 heartbeatIncoming: 10000,
 
 heartbeatOutgoing: 10000,
 
-debug: () => {}                 // sin logs en consola
+debug: () => {}                 
 
 });
 
 this.client.onConnect = () => {
 
-// Productos
+
 
 this.subs.push(
 
@@ -63,7 +63,7 @@ this.zone.run(() => this.productosSubject.next(JSON.parse(msg.body)));
 
 );
 
-// Movimientos (ajusta el tópico si en backend usas otro, p.e. '/topic/movimientos')
+
 
 this.subs.push(
 
@@ -75,7 +75,7 @@ this.zone.run(() => this.movimientosSubject.next(JSON.parse(msg.body)));
 
 );
 
-// Alertas
+
 
 this.subs.push(
 
@@ -93,7 +93,7 @@ this.client.activate();
 
 }
 
-// No llames a disconnect() salvo al cerrar la app
+
 
 disconnect(): void {
 
@@ -104,3 +104,4 @@ try { this.client.deactivate(); } catch {}
 }
 
 }
+

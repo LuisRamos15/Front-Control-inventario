@@ -5,9 +5,9 @@ import { debounceTime } from 'rxjs/operators';
 
 import { ProductosService, Producto } from '../../services/productos.service';
 
-import { WebSocketService } from '../../../../core/services/websocket.service';
+import { WebSocketService } from '../../../../core/realtime/websocket.service';
 
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
@@ -22,14 +22,14 @@ type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
   styleUrls: ['./inventario.component.css']
 })
 export class InventarioComponent implements OnInit {
-  // UI
+  
   buscando = '';
   cargando = false;
   modalOpen = false;
   confirmDeleteOpen = false;
   deleteTarget?: Producto;
 
-  // datos
+  
   productos: (Producto & { estado?: Estado })[] = [];
   filtrados: (Producto & { estado?: Estado })[] = [];
   editTarget?: Producto;
@@ -46,13 +46,12 @@ export class InventarioComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargar();
-    // Tiempo real: si hay cambios en productos -> recargar
     this.ws.productos$
       .pipe(debounceTime(200))
       .subscribe(() => this.cargar());
   }
 
-  /** Carga del backend: lista completa o búsqueda paginada (Page->content) */
+  
   cargar(): void {
     this.cargando = true;
     const q = (this.buscando || '').trim();
@@ -71,12 +70,10 @@ export class InventarioComponent implements OnInit {
     });
   }
 
-  /** Cambio en caja de búsqueda (buscar remoto). No toca HTML/CSS. */
   onBuscarChange(): void {
     this.cargar();
   }
 
-  /** Derivar estado visual desde stock/minimo/stockMaximo */
   private calcularEstado(p: Producto): Estado {
     const stock = p.stock ?? 0;
     const min   = p.minimo ?? 0;
@@ -87,7 +84,7 @@ export class InventarioComponent implements OnInit {
     return 'NORMAL';
   }
 
-  // Botones (solo visual por ahora; no se toca navegación)
+  
   crearProducto(): void { this.editTarget = undefined; this.modalOpen = true; }
   editar(p: Producto): void {
 if (!this.canManageProductos) { return; }
@@ -108,7 +105,6 @@ this.modalOpen = true;
         next: () => {
           this.cargando = false;
           this.closeConfirmDelete();
-          /* la lista se actualiza por WS */
         },
         error: (e) => {
           this.cargando = false;
@@ -131,5 +127,6 @@ this.modalOpen = true;
     return p?.id ?? p?.sku ?? index;
   }
 
-  onModalSaved()  { this.editTarget = undefined; /* WS actualiza */ }
+  onModalSaved()  { this.editTarget = undefined; }
 }
+

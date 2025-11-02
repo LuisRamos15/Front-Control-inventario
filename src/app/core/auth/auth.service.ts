@@ -14,13 +14,19 @@ export interface UsuarioReq { nombreUsuario: string; password: string; roles?: s
 export type AppRole = 'ADMIN' | 'SUPERVISOR' | 'OPERADOR';
 
 interface DecodedToken {
-  sub?: string;           // username
-  roles?: string[];       // viene del backend
+  sub?: string;
+  roles?: string[];
   [k: string]: any;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // Mapa de etiquetas legibles; respeta los roles actuales del sistema
+  private readonly ROLE_LABELS: Record<string, string> = {
+    'ADMIN': 'Administrador',
+    'SUPERVISOR': 'Supervisor',
+    'OPERADOR': 'Operador'
+  };
   constructor(private http: HttpClient) {
     this.refreshFromToken();
   }
@@ -53,7 +59,6 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  // --- NUEVO: estado observable con username y roles
   private userSubject = new BehaviorSubject<{username?: string; roles: AppRole[]}>({ roles: [] });
   user$ = this.userSubject.asObservable();
 
@@ -61,7 +66,6 @@ export class AuthService {
     return this.userSubject.value;
   }
 
-  // Llamar a esto cuando guardes/borres token (después de login/logout)
   refreshFromToken(): void {
     const token = this.getToken();
     if (!token) {
@@ -75,7 +79,6 @@ export class AuthService {
     this.userSubject.next({ username: payload.sub, roles });
   }
 
-  // -----> ADITIVO: rol principal por prioridad (ADMIN > SUPERVISOR > OPERADOR)
   getPrimaryRole(): AppRole | null {
     const roles = this.userSubject.value.roles ?? [];
     if (roles.includes('ADMIN')) return 'ADMIN';
@@ -84,16 +87,44 @@ export class AuthService {
     return null;
   }
 
-  // -----> ADITIVO: etiqueta a mostrar
-  getRoleLabel(): 'Admin' | 'Supervisor' | 'Operador' | null {
-    const r = this.getPrimaryRole();
-    if (r === 'ADMIN') return 'Admin';
-    if (r === 'SUPERVISOR') return 'Supervisor';
-    if (r === 'OPERADOR') return 'Operador';
-    return null;
+  /**
+   * Devuelve la etiqueta legible de un rol.
+   * - Si no se pasa rol, intenta obtenerlo del usuario autenticado (si existe).
+   * - Nunca lanza error: si el rol no es reconocido, devuelve el rol tal cual.
+   */
+  public getRoleLabel(role?: string): string | null {
+    try {
+      const r = (role ?? this.getCurrentRole() ?? '').toString().toUpperCase().trim();
+      return this.ROLE_LABELS[r] || (r ? r : null);
+    } catch {
+      // fallback ultra-conservador; no romper template
+      return null;
+    }
   }
 
-  // -----> ADITIVO: helper para decodificar JWT sin librerías externas
+  /**
+   * Retorna el rol actual del usuario (string) usando la estrategia vigente.
+   * NO modificar la lógica ya existente en el servicio:
+   * - Si ya existe un método equivalente (p. ej. this.getRole(), this.user?.rol, etc.),
+   *   reutilizarlo aquí.
+   */
+  private getCurrentRole(): string | null {
+    // IMPLEMENTACIÓN NO INTRUSIVA:
+    // 1) Si ya tienes un método similar, úsalo (ej.: return this.getRole();)
+    // 2) Si guardas el usuario en memoria/localStorage/token-decoding, lee de ahí.
+    // 3) Si no puedes inferirlo de forma segura, retorna null.
+    try {
+      const user =
+        (this as any).userSubject?.value ??
+        (this as any).currentUser ??
+        null;
+      return user?.rol ?? user?.role ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  
   private safeDecode(token: string): DecodedToken {
     try {
       const [, payloadB64] = token.split('.');
@@ -104,7 +135,6 @@ export class AuthService {
     }
   }
 
-  /** Devuelve roles actuales desde el estado ya existente (userSubject). */
   getRoles(): AppRole[] {
     try {
       const v = (this as any).userSubject?.value?.roles;
@@ -112,7 +142,6 @@ export class AuthService {
     } catch { return []; }
   }
 
-  /** ¿Puede gestionar productos? Solo ADMIN o SUPERVISOR. */
   canManageProductos(): boolean {
     const roles = this.getRoles();
     return roles.includes('ADMIN') || roles.includes('SUPERVISOR');
@@ -128,14 +157,13 @@ export class AuthService {
     return r === 'OPERADOR' || r === 'OPERATOR' || r === 'ROLE_OPERADOR' || r === 'ROLE_OPERATOR';
   }
 
-  /** Operador solo puede SALIDA; Admin/Supervisor: ambos */
   canCreateMovimiento(tipo: 'ENTRADA'|'SALIDA'): boolean {
     if (this.isAdminOrSupervisor()) return true;
     if (this.isOperator()) return tipo === 'SALIDA';
     return false;
   }
 
-  /** Para la UI del botón "Nuevo Movimiento" */
+  
   canOpenMovimientoModal(): boolean {
     return this.isAdminOrSupervisor() || this.isOperator();
   }
@@ -149,3 +177,4 @@ export class AuthService {
     return this.getRoles().includes(role as AppRole);
   }
 }
+

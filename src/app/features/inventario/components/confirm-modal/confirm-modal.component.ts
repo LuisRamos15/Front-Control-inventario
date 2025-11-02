@@ -25,3 +25,4 @@ export class ConfirmModalComponent {
 
   onConfirmClicked() { this.confirm.emit(); }
 }
+

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +19,21 @@ export class HeaderComponent {
 
   close() { this.open = false; }
 
+  getUserRoleLabel(): string {
+    try {
+      const role = this.auth.getPrimaryRole() || '';
+      const labels: Record<string, string> = {
+        ADMIN: 'Administrador',
+        SUPERVISOR: 'Supervisor',
+        OPERADOR: 'Operador'
+      };
+      // Si no hay rol reconocido, no mostrar Usuario: devolver cadena vacía
+      return labels[role] ?? '';
+    } catch {
+      return '';
+    }
+  }
+
    logout() {
      this.auth.clear();
      this.auth.refreshFromToken();
@@ -26,3 +41,4 @@ export class HeaderComponent {
      this.router.navigate(['/login'], { replaceUrl: true });
    }
 }
+

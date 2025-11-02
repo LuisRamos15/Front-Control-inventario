@@ -24,3 +24,4 @@ export class DashboardService {
     return this.http.get<TopProducto[]>(`${this.base}/top-productos?tipo=${tipo}&limit=${limit}&desde=${desde}&hasta=${hasta}`);
   }
 }
+

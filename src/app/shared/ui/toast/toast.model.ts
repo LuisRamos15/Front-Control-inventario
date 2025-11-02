@@ -7,3 +7,4 @@ export interface ToastData {
   variant?: ToastVariant;
   timeoutMs?: number;
 }
+

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AlertsService } from './core/services/alerts.service';
+import { AlertsService } from './core/realtime/alerts.service';
 import { ToastContainerComponent } from './shared/ui/toast/toast-container.component';
 
 @Component({
@@ -17,3 +17,4 @@ export class AppComponent implements OnInit {
     this.alerts.initWsListener();
   }
 }
+

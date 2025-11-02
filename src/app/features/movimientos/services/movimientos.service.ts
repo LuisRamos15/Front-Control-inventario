@@ -10,7 +10,7 @@ export interface Movimiento {
   cantidad: number;
   tipo: 'ENTRADA' | 'SALIDA';
   usuario: string;
-  fecha: string;          // ISO Instant
+  fecha: string;          
   stockAntes: number;
   stockDespues: number;
 }
@@ -26,7 +26,7 @@ export interface PageResp<T> {
   totalElements: number;
   totalPages: number;
   size: number;
-  number: number; // page index
+  number: number; 
 }
 
 @Injectable({ providedIn: 'root' })
@@ -52,3 +52,4 @@ export class MovimientosService {
     return this.http.post<void>('/api/movimientos', body);
   }
 }
+

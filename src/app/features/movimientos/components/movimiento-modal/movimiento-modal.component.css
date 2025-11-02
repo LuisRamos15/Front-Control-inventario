@@ -4,7 +4,7 @@ display: block;
 
 }
 
-/* Backdrop + panel centrado */
+
 
 .mp-overlay{
 
@@ -64,7 +64,7 @@ font-size: 1.05rem;
 
 font-weight: 700;
 
-color: #0f172a; /* slate-900 */
+color: #0f172a; 
 
 }
 
@@ -92,7 +92,7 @@ line-height: 1;
 
 }
 
-/* Close button */
+
 
 .mp-close {
 
@@ -106,7 +106,7 @@ font-size: 20px;
 
 line-height: 1;
 
-color: #64748b; /* slate-500 */
+color: #64748b; 
 
 cursor: pointer;
 

@@ -10,3 +10,4 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {}
+

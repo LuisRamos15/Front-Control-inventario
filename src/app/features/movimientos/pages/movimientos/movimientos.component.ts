@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MovimientosService, Movimiento, PageResp } from '../../services/movimientos.service';
 
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
-import { WebSocketService } from '../../../../core/services/websocket.service';
+import { WebSocketService } from '../../../../core/realtime/websocket.service';
 
 import { Subscription } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { MovimientoModalComponent } from '../../components/movimiento-modal/movi
 
   standalone: true,
 
-  imports: [CommonModule, DatePipe, MovimientoModalComponent /* + lo que ya tuviera */],
+  imports: [CommonModule, DatePipe, MovimientoModalComponent ],
 
   templateUrl: './movimientos.component.html',
 
@@ -35,7 +35,7 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
    modalOpen = false;
 
-   // propiedades
+   
 
    showNuevoModal = false;
 
@@ -57,16 +57,9 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
     this.load();
 
-    // Refrescar al recibir un movimiento por WS
-
-    this.wsSub = this.ws.movimientos$.subscribe(() => {
-
-      // recargar primera página del filtro actual
-
+     this.wsSub = this.ws.movimientos$.subscribe(() => {
       this.page = 0;
-
       this.load();
-
     });
 
   }
@@ -79,15 +72,13 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   setTab(t: 'TODOS'|'ENTRADAS'|'SALIDAS') {
 
-    this.tab = t;
-
     this.page = 0;
 
     this.load();
 
   }
 
-   load(): void {
+  load(): void {
 
      this.cargando = true;
 
@@ -117,23 +108,19 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
    closeNuevoMovimiento(){ this.showNuevoModal = false; }
 
-   onMovimientoGuardado(payload: any) {
+    onMovimientoGuardado(payload: any) {
 
-     // Enviar SOLO los campos requeridos por el backend:
+      const req = {
 
-     const req = {
+        productoId: payload.productoId,
 
-       productoId: payload.productoId,
+        tipo: payload.tipo,
 
-       tipo: payload.tipo,
+        cantidad: payload.cantidad
 
-       cantidad: payload.cantidad
+      };
 
-     };
-
-     // Llamar al servicio existente que hace POST /api/movimientos
-
-     this.svc.registrar(req).subscribe({
+      this.svc.registrar(req).subscribe({
 
        next: () => {
 
@@ -153,10 +140,9 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   pagePrev(){ if (this.page > 0) { this.page--; this.load(); } }
 
-  // Helpers para maqueta: mapear motivo segun tipo, notas vacío
-
   motivoOf(m: Movimiento){ return m.tipo === 'ENTRADA' ? 'Reposición' : 'Venta'; }
 
   getTotalPages(): number { return Math.max(1, Math.ceil(this.total / this.size)); }
 
 }
+

@@ -14,3 +14,4 @@ export interface TopProducto {
   nombre: string;
   cantidad: number;
 }
+

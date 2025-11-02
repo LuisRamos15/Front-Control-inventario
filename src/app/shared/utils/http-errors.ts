@@ -4,3 +4,4 @@ export function humanizeAuthMessage(err: any): string {
   if (/usuario.*no.*encontrado/i.test(raw) || /user.*not.*found/i.test(raw)) return 'Usuario no encontrado';
   return raw || 'Error de autenticación';
 }
+

@@ -1,12 +1,10 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './core/guards/auth.guard';
+import { AuthGuard } from './core/auth/auth.guard';
 import { GuestGuard } from './core/guards/guest.guard';
 import { LoginComponent } from './features/auth/pages/login/login.component';
 import { RegisterComponent } from './features/auth/pages/register/register.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { LayoutComponent } from './layout/layout.component';
-// (cuando tengamos InventarioComponent lo importamos aquí)
-
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
@@ -51,3 +49,4 @@ export const routes: Routes = [
    },
    { path: '**', redirectTo: 'dashboard' },
 ];
+

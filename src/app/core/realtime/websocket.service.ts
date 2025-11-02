@@ -3,12 +3,14 @@ import { Client, Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth/auth.service';
 import { ToastService } from '../../shared/ui/toast/toast.service';
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class WebSocketService {
   private client: Client;
   private alertasSubject = new Subject<any>();
@@ -39,7 +41,7 @@ export class WebSocketService {
           const payload = JSON.parse(message.body);
           this.alertasSubject.next(payload);
 
-          // Toast SOLO si es ADMIN:
+  
           if (this.auth.hasRole('ADMIN')) {
             const nombre = payload?.productoNombre || 'Producto';
             const sku = payload?.sku ? ` (${payload.sku})` : '';
@@ -70,9 +72,14 @@ export class WebSocketService {
     this.client.activate();
   }
 
+  connect() {
+    console.log("Conectando al servidor...");
+  }
+
   disconnect() {
     if (this.client) {
       this.client.deactivate();
     }
   }
 }
+

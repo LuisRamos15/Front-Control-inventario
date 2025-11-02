@@ -21,3 +21,4 @@ describe('Registro', () => {
     expect(component).toBeTruthy();
   });
 });
+

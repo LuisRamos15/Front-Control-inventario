@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatIconModule } from '@angular/material/icon';
 import { ProductosService, Producto } from '../../../inventario/services/productos.service';
 import { MovimientosService, MovimientoCreate } from '../../services/movimientos.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 import { AlertModalService } from '../ui/alert-modal/alert-modal.service';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -40,7 +40,7 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
       tipo: ['SALIDA', [Validators.required]],
       productoId: ['', [Validators.required]],
       cantidad: [1, [Validators.required, Validators.min(1)]],
-      search: [''] // solo para buscar productos por nombre/sku
+      search: [''] 
     });
   }
 
@@ -48,7 +48,7 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
 
   ngOnChanges(ch: SimpleChanges): void {
     if (ch['open']?.currentValue) {
-      // reset cada vez que abre
+      
       const tipoInicial = this.soloSalida ? 'SALIDA' : 'ENTRADA';
       this.form.reset({ tipo: tipoInicial, productoId: '', cantidad: 1, search: '' });
       this.seleccionado = undefined;
@@ -63,7 +63,7 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
         q = (q || '').trim();
         if (!q) { this.resultados = []; return of([]); }
         this.buscando = true;
-        // buscar por texto (nombre/categoria/sku)
+        
         return this.productos.buscar(q, 10);
       })
     ).subscribe((resultados: Producto[]) => {
@@ -85,7 +85,7 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
 
       if (!this.auth.canCreateMovimiento(tipo)) return;
 
-        // Validación cliente
+        
         if (tipo === 'SALIDA' && this.seleccionado && this.seleccionado.stock !== undefined) {
           if (this.form.value.cantidad > this.seleccionado.stock) {
             this.alert.open({
@@ -131,3 +131,4 @@ export class MovimientoModalComponent implements OnChanges, OnInit {
     if (e.key === 'Escape') this.onCancel();
   }
 }
+

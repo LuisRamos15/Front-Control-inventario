@@ -17,3 +17,4 @@ export class DropdownComponent {
     this.itemSelected.emit(item);
   }
 }
+

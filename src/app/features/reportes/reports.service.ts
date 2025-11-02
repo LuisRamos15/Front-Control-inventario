@@ -50,7 +50,7 @@ export class ReportsService {
     return this.http.get<Page<Movimiento>>(`${this.base}/movimientos`, { params: p });
   }
 
-  /** KPIs agregados en front (sin tocar backend) */
+  
   getKpis30d() {
     return forkJoin({
       productos: this.getProductos(),
@@ -90,3 +90,4 @@ export class ReportsService {
     );
   }
 }
+

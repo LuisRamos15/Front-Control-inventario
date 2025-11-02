@@ -1,4 +1,3 @@
-<!-- Solo renderiza cuando open=true -->
 <div *ngIf="open">
   <div class="confirm-backdrop" (click)="onBackdrop()"></div>
   <div class="confirm-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">

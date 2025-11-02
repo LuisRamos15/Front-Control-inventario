@@ -39,7 +39,7 @@
   line-height: 1;
   padding: 4px 8px;
   cursor: pointer;
-  color: #64748b; /* slate-500 */
+  color: #64748b; 
 }
 
 .mp-body {
@@ -71,13 +71,13 @@ color: #0f172a;
 
 
 .pm-readonly {
-  background: #f8fafc; /* slate-50 */
+  background: #f8fafc; 
   color: #475569;
 }
 
 .pm-hint {
   font-size: 11px;
-  color: #94a3b8; /* slate-400 */
+  color: #94a3b8; 
   margin-top: -4px;
 }
 
@@ -102,12 +102,12 @@ color: #0f172a;
 }
 
 .pm-btn-ghost {
-  background: #f1f5f9;    /* slate-100 */
-  color: #334155;         /* slate-700 */
+  background: #f1f5f9;    
+  color: #334155;         
 }
 
 .pm-btn-primary {
-  background: #2563eb;    /* brand */
+  background: #2563eb;    
   color: #fff;
 }
 
@@ -118,5 +118,5 @@ color: #0f172a;
 
 @media (max-width: 640px) {
   .pm-modal { width: 94vw; }
-  .pm-2cols { grid-template-columns: 1fr; } /* columnas apiladas en móvil */
+  .pm-2cols { grid-template-columns: 1fr; } 
 }

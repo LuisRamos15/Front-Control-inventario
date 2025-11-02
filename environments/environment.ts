@@ -2,9 +2,9 @@ export const environment = {
 
 production: false,
 
-apiUrl: '/api',        // no lo uses directamente si ya pusiste base = '/api/...'
+apiUrl: '/api',        
 
-wsUrl: '/ws',          // importante para proxy de WS
+wsUrl: '/ws',          
 
 topicProductos: '/topic/productos'
 

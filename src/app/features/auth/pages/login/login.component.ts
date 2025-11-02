@@ -7,9 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
-import { LoginReq } from '../../../../core/services/auth.service';
+import { LoginReq } from '../../../../core/auth/auth.service';
 
 import { humanizeAuthMessage } from '../../../../shared/utils/http-errors';
 
@@ -64,3 +64,4 @@ password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 }
+

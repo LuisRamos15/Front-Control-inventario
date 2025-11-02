@@ -1,9 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'app-info-dialog',
   templateUrl: './info-dialog.component.html',
-  styleUrls: ['./info-dialog.component.css']
+  styleUrls: ['./info-dialog.component.css'],
+  imports: [CommonModule]
 })
 export class InfoDialogComponent {
   @Input() open = false;
@@ -16,3 +19,4 @@ export class InfoDialogComponent {
     this.close.emit();
   }
 }
+

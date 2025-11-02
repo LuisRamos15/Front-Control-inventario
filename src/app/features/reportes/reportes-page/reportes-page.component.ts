@@ -1,8 +1,8 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { ReportesService } from '../reportes.service';
-import { LiveUpdatesService } from '../../../core/services/live-updates.service';
-import { DashboardService } from '../../../core/services/dashboard';
+import { LiveUpdatesService } from '../../../core/realtime/live-updates.service';
+import { DashboardService } from '../../../core/realtime/dashboard';
 import { TopProducto } from '../../../shared/models/dashboard.models';
 import { finalize } from 'rxjs/operators';
 import { Chart, ChartConfiguration } from 'chart.js';
@@ -38,16 +38,16 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (d) => {
         this.totalProductos = d?.totalProductos ?? 0;
         this.productosBajos = d?.stockBajo ?? 0;
-        // Cargar productos y calcular en cliente:
+        
         this.reportes.getProductos().subscribe({
           next: (ps) => {
-            // Valor total = sum(precioUnitario * stock), tolerante a null/undefined
+            
             this.valorTotal = (ps ?? []).reduce((acc, p) => {
               const precio = Number(p?.precioUnitario) || 0;
               const stock  = Number(p?.stock) || 0;
               return acc + (precio * stock);
             }, 0);
-            // Categorías = set de categorías no vacías
+            
             const categoriasSet = new Set(
               (ps ?? [])
                 .map(p => (p?.categoria ?? '').trim())
@@ -57,7 +57,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
           },
           error: (e) => {
             console.error('Error cargando productos para KPIs de reportes', e);
-            // Fallback visual sin romper UI
+            
             this.valorTotal = 0;
             this.categorias  = 0;
           }
@@ -66,15 +66,15 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       error: (e) => console.error('Error al cargar resumen:', e)
     });
 
-    // Cargar top productos
+    
     this.loadTopProductos();
 
-    // Initialize live updates
+    
     this.liveUpdates.init();
 
-    // Subscribe to live updates
+    
     this.liveUpdates.productos$().subscribe(() => {
-      // Re-calculate valorTotal and categorias
+      
       this.reportes.getProductos().subscribe(ps => {
         this.valorTotal = (ps ?? []).reduce((acc, p) => {
           const precio = Number(p?.precioUnitario) || 0;
@@ -91,7 +91,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.liveUpdates.movimientos$().subscribe(() => {
-      // Re-fetch and update charts
+      
       this.reportes.getMovimientosPorDia().subscribe(dias => {
         const labels = dias.map(d => d.fecha);
         const entradas = dias.map(d => d.entradas ?? 0);
@@ -135,7 +135,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // 1) Tendencias: entradas vs salidas
+    
     this.reportes.getMovimientosPorDia().subscribe(dias => {
       const labels  = dias.map(d => d.fecha);
       const entradas = dias.map(d => d.entradas ?? 0);
@@ -159,7 +159,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.trendChart = new Chart(this.trendCanvas.nativeElement.getContext('2d')!, cfg);
     });
 
-    // 2) Top 5 consumo (salidas)
+    
     this.reportes.getTopProductos('SALIDA', 5).subscribe(items => {
       const labels = items.map(x => x.nombre || x.sku || 'N/A');
       const data   = items.map(x => x.cantidad ?? 0);
@@ -177,7 +177,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       this.consumoChart = new Chart(this.consumoCanvas.nativeElement.getContext('2d')!, cfg);
     });
 
-    // 3) Rotación (línea de salidas + media móvil 7 días)
+    
     this.reportes.getMovimientosPorDia().subscribe(dias => {
       const labels  = dias.map(d => d.fecha);
       const salidas = dias.map(d => d.salidas ?? 0);
@@ -243,7 +243,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onImprimir() {
-    // Solo imprime el contenido del contenedor #printArea para no alterar otras vistas
+    
     const section = document.getElementById('printArea');
     if (!section) return window.print();
     const w = window.open('', 'PRINT', 'height=600,width=900');
@@ -273,3 +273,4 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.rotacionChart?.destroy();
   }
 }
+
