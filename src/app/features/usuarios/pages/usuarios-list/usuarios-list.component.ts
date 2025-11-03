@@ -19,6 +19,7 @@ export class UsuariosListComponent implements OnInit {
   currentUsername = '';
   editOpen = false;
   saving = false;
+  successOpen = false;
   editTarget: any = null;
   editForm: { nombreUsuario: string; rol: string } = { nombreUsuario: '', rol: '' };
 
@@ -44,34 +45,15 @@ export class UsuariosListComponent implements OnInit {
     );
   }
 
-  estaEnLinea(u: any): boolean {
-    const nombre = (u?.nombreUsuario || '').toString();
-    const esSelf = this.currentUsername ? this.currentUsername.toLowerCase() === nombre.toLowerCase() : false;
-    const enLinea = u?.enLinea ? true : false;
-    return enLinea || esSelf;
+  hasRole(u: any, role: string): boolean {
+    return (u.roles?.[0] || '').toString().toUpperCase() === role;
   }
 
-  eliminar(usuario: any): void {
-    Swal.fire({
-      title: '¿Eliminar usuario?',
-      text: `Se eliminará definitivamente a ${usuario.nombreUsuario}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(result => {
-      if (result.isConfirmed) {
-        this.usuariosService.eliminar(usuario.id).subscribe({
-          next: () => {
-            Swal.fire('Eliminado', 'Usuario eliminado correctamente.', 'success');
-            this.cargarUsuarios();
-          }
-        });
-      }
-    });
+  displayRol(u: any): string {
+    return (u.roles?.[0] || '').toString().toUpperCase();
   }
 
-  openEdit(u: any) {
+  onEdit(u: any) {
     this.editTarget = u;
     this.editForm = {
       nombreUsuario: u?.nombreUsuario || '',
@@ -108,18 +90,41 @@ export class UsuariosListComponent implements OnInit {
       return;
     }
     this.saving = true;
-    this.usuariosService.patchUsuario(this.editTarget.id, payload).subscribe({
-      next: (updated) => {
-        this.saving = false;
-        if (payload.nombreUsuario) this.editTarget.nombreUsuario = payload.nombreUsuario;
-        if (payload.roles) this.editTarget.roles = payload.roles;
-        this.closeEdit();
-      },
-      error: (err) => {
-        this.saving = false;
-        alert('No se pudo guardar los cambios');
-        console.error(err);
-      }
-    });
-  }
-}
+     this.usuariosService.patchUsuario(this.editTarget.id, payload).subscribe({
+        next: (updated) => {
+          if (payload.nombreUsuario) this.editTarget.nombreUsuario = payload.nombreUsuario;
+          if (payload.roles) this.editTarget.roles = payload.roles;
+          this.saving = false;
+          this.editOpen = false;
+          // Mostrar éxito centrado
+          this.successOpen = true;
+          setTimeout(() => { this.successOpen = false; }, 1400);
+        },
+       error: (err) => {
+         this.saving = false;
+         console.error(err);
+         alert('No se pudo guardar los cambios');
+       }
+      });
+   }
+
+   onDelete(u: any): void {
+     Swal.fire({
+       title: '¿Eliminar usuario?',
+       text: `Se eliminará definitivamente a ${u.nombreUsuario}`,
+       icon: 'warning',
+       showCancelButton: true,
+       confirmButtonText: 'Sí, eliminar',
+       cancelButtonText: 'Cancelar'
+     }).then(result => {
+       if (result.isConfirmed) {
+         this.usuariosService.eliminar(u.id).subscribe({
+           next: () => {
+             Swal.fire('Eliminado', 'Usuario eliminado correctamente.', 'success');
+             this.cargarUsuarios();
+           }
+         });
+       }
+     });
+   }
+ }

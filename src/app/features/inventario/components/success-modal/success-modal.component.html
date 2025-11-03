@@ -1,0 +1,8 @@
+<div class="modal-overlay" *ngIf="open" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="success-icon">✓</div>
+    <h3>¡Éxito!</h3>
+    <p>{{ message }}</p>
+    <button class="btn-close" (click)="close()">Cerrar</button>
+  </div>
+</div>

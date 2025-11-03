@@ -15,99 +15,87 @@
     </div>
   </div>
   <div class="card">
-    <div class="table-responsive">
-      <table class="table align-middle users-table">
-        <thead>
-          <tr>
-            <th>Usuario</th>
-            <th class="col-rol">Rol</th>
-            <th class="col-activo">Activo</th>
-            <th class="col-estado">Estado</th>
-            <th class="col-ultima">última conexión</th>
-            <th class="col-acciones text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let u of filtrar()">
-            <td>
-              <div class="user-cell">
-                <div class="avatar">{{ (u.nombreUsuario || '?').charAt(0) | uppercase }}</div>
-                <div class="meta">
-                  <div class="name">{{ u.nombreUsuario }}</div>
-                  <div class="muted" *ngIf="estaEnLinea(u)">Ahora mismo</div>
-                  <div class="muted" *ngIf="!estaEnLinea(u)">Desconectado</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <span class="badge role-badge"
-                [class.bg-primary]="u.roles?.[0]==='ADMIN'"
-                [class.bg-warning]="u.roles?.[0]==='SUPERVISOR'"
-                [class.bg-info]="u.roles?.[0]==='OPERADOR'">
-                {{ (u.roles?.[0] || '').toUpperCase() }}
-              </span>
-            </td>
-            <td>
-              <span class="chip" [class.chip-green]="u.activo" [class.chip-gray]="!u.activo">
-                {{ u.activo ? 'Sí' : 'No' }}
-              </span>
-            </td>
-            <td>
-              <span class="state"
-                [class.ok]="estaEnLinea(u)"
-                [class.off]="!estaEnLinea(u)">
-                <span class="dot"></span>
-                {{ estaEnLinea(u) ? 'Conectado' : 'Desconectado' }}
-              </span>
-            </td>
-            <td>
-              <span class="muted">
-                {{ u.ultimaConexion ? (u.ultimaConexion | date:'yyyy-MM-dd HH:mm') : '' }}
-              </span>
-            </td>
-            <td class="text-center actions-cell">
-              <button type="button" class="btn-icon primary" (click)="openEdit(u)" title="Editar">
-                <i class="bi bi-pencil"></i>
-              </button>
-              <button type="button" class="btn-icon danger" (click)="eliminar(u)" title="Eliminar">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="filtrar().length===0">
-            <td colspan="6" class="empty">Sin resultados para {{filtro}}.</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="users-table">
+      <div class="users-header">
+        <div class="col col-usuario">Usuario</div>
+        <div class="col col-rol">Rol</div>
+        <div class="col col-activo">Activo</div>
+        <div class="col col-acciones">Acciones</div>
+      </div>
+      <div class="users-row" *ngFor="let u of filtrar()">
+        <div class="col col-usuario">
+          <div class="user-id">
+            <span class="avatar">{{ u.nombreUsuario?.charAt(0) | uppercase }}</span>
+            <div class="name-mail">
+              <div class="name">{{ u.nombreUsuario }}</div>
+              <div class="sub" *ngIf="u.email">{{ u.email }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col col-rol">
+          <span class="pill"
+            [ngClass]="{'pill--admin': hasRole(u,'ADMIN'),
+            'pill--super': hasRole(u,'SUPERVISOR'),
+            'pill--op': hasRole(u,'OPERADOR')}">
+            {{ displayRol(u) }}
+          </span>
+        </div>
+        <div class="col col-activo">
+          <span class="flag" [class.flag--ok]="u.activo" [class.flag--off]="!u.activo">
+            {{ u.activo ? 'Sí' : 'No' }}
+          </span>
+        </div>
+        <div class="col col-acciones">
+          <button type="button" class="btn-ghost" (click)="onEdit(u)" aria-label="Editar usuario">
+            <i class="ri-pencil-line"></i>
+          </button>
+          <button type="button" class="btn-ghost btn-danger" (click)="onDelete(u)" aria-label="Eliminar usuario">
+            <i class="ri-delete-bin-6-line"></i>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="filtrar().length===0" class="empty">Sin resultados para {{filtro}}.</div>
     </div>
   </div>
 
-  <!-- Modal editar usuario -->
-  <div class="modal-backdrop" *ngIf="editOpen" (click)="closeEdit()"></div>
-  <div class="modal" *ngIf="editOpen">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h5>Editar Usuario</h5>
-        <button type="button" class="btn-close" (click)="closeEdit()"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="editNombre" class="form-label">Nombre de Usuario</label>
-          <input type="text" class="form-control" id="editNombre" [(ngModel)]="editForm.nombreUsuario">
-        </div>
-        <div class="mb-3">
-          <label for="editRol" class="form-label">Rol</label>
-          <select class="form-select" id="editRol" [(ngModel)]="editForm.rol">
-            <option value="ADMIN">ADMIN</option>
-            <option value="SUPERVISOR">SUPERVISOR</option>
-            <option value="OPERADOR">OPERADOR</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeEdit()">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="saveEdit()">Guardar</button>
-      </div>
+   <!-- Overlay -->
+   <div class="u-modal-backdrop" *ngIf="editOpen" (click)="closeEdit()"></div>
+   <!-- Panel centrado -->
+   <div class="u-modal" *ngIf="editOpen" role="dialog" aria-modal="true" aria-label="Editar Usuario">
+     <div class="u-modal__hdr">
+       <h3>Editar Usuario</h3>
+       <button class="u-close" (click)="closeEdit()" aria-label="Cerrar"></button>
+     </div>
+     <div class="u-modal__body">
+       <div class="u-field">
+         <label>Nombre de Usuario</label>
+         <input class="u-input"
+           type="text"
+           [(ngModel)]="editForm.nombreUsuario"
+           maxlength="60" />
+       </div>
+       <div class="u-field">
+         <label>Rol</label>
+         <select class="u-input"
+           [(ngModel)]="editForm.rol">
+           <option value="ADMIN">ADMIN</option>
+           <option value="SUPERVISOR">SUPERVISOR</option>
+           <option value="OPERADOR">OPERADOR</option>
+         </select>
+       </div>
+     </div>
+     <div class="u-modal__ftr">
+       <button class="u-btn u-btn-ghost" (click)="closeEdit()">Cancelar</button>
+       <button class="u-btn u-btn-primary" (click)="saveEdit()" [disabled]="saving || !isEditValid()">
+         Guardar
+       </button>
+     </div>
+   </div>
+
+    <!-- éxito centrado -->
+    <div class="u-success-backdrop" *ngIf="successOpen"></div>
+    <div class="u-success" *ngIf="successOpen" role="alert" aria-live="assertive">
+      <div class="u-success__icon"></div>
+      <div class="u-success__text">Usuario editado exitosamente</div>
     </div>
-  </div>
 </div>

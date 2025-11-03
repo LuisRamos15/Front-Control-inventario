@@ -11,13 +11,14 @@ import { AuthService } from '../../../../core/auth/auth.service';
 
 import { ProductoModalComponent } from '../../components/producto-modal/producto-modal.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { SuccessModalComponent } from '../../components/success-modal/success-modal.component';
 
 type Estado = 'CRITICO' | 'BAJO' | 'NORMAL' | 'ALTO';
 
 @Component({
   selector: 'app-inventario',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductoModalComponent, ConfirmModalComponent],
+  imports: [CommonModule, FormsModule, ProductoModalComponent, ConfirmModalComponent, SuccessModalComponent],
   templateUrl: './inventario.component.html',
   styleUrls: ['./inventario.component.css']
 })
@@ -27,6 +28,7 @@ export class InventarioComponent implements OnInit {
   cargando = false;
   modalOpen = false;
   confirmDeleteOpen = false;
+  successOpen = false;
   deleteTarget?: Producto;
 
   
@@ -100,12 +102,13 @@ this.modalOpen = true;
   doDelete(): void {
     if (!this.deleteTarget) return;
     this.cargando = true;
-    this.productosService.eliminarProducto(this.deleteTarget.id!)
-      .subscribe({
-        next: () => {
-          this.cargando = false;
-          this.closeConfirmDelete();
-        },
+     this.productosService.eliminarProducto(this.deleteTarget.id!)
+       .subscribe({
+         next: () => {
+           this.cargando = false;
+           this.closeConfirmDelete();
+           this.successOpen = true;
+         },
         error: (e) => {
           this.cargando = false;
           console.error(e);
@@ -127,6 +130,6 @@ this.modalOpen = true;
     return p?.id ?? p?.sku ?? index;
   }
 
-  onModalSaved()  { this.editTarget = undefined; }
+  onModalSaved()  { this.editTarget = undefined; this.successOpen = true; }
 }
 
