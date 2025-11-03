@@ -4,13 +4,16 @@
     InventarioPRO
   </div>
    <div class="spacer"></div>
-   <div class="status status-indicator"><span class="dot"></span> En línea</div>
-   <div class="user" (mouseenter)="open = true">
-     <button class="user-btn" type="button" (click)="toggle()">
-        <span class="avatar">A</span>
-        <div class="status-indicator main-status"><span class="dot"></span> {{ getUserRoleLabel() }} En línea</div>
-       <span class="chev"></span>
-     </button>
+    <div class="user" (mouseenter)="open = true">
+      <button class="user-btn" type="button" (click)="toggle()">
+        <div class="user-pill">
+          <span class="avatar">A</span>
+          <span class="user-name">{{ getDisplayName() }}</span>
+          <span class="sep" *ngIf="getRoleLabel()"></span>
+          <span class="user-role" *ngIf="getRoleLabel()">{{ getRoleLabel() }}</span>
+        </div>
+        <span class="chev"></span>
+      </button>
     <div class="menu" *ngIf="open" (mouseenter)="open = true" (mouseleave)="close()">
       <a routerLink="/perfil">Perfil</a>
       <button type="button" (click)="logout()">Cerrar sesión</button>

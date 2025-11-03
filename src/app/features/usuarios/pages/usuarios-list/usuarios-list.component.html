@@ -1,0 +1,113 @@
+<div class="users-wrapper">
+  <div class="users-header">
+    <div class="title">
+      <h2>Gestión de Usuarios</h2>
+      <p>Administra roles, estado y conexión.</p>
+    </div>
+    <div class="search-box">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por nombre o rol"
+        [(ngModel)]="filtro"
+      />
+      <span class="search-icon"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table align-middle users-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th class="col-rol">Rol</th>
+            <th class="col-activo">Activo</th>
+            <th class="col-estado">Estado</th>
+            <th class="col-ultima">última conexión</th>
+            <th class="col-acciones text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of filtrar()">
+            <td>
+              <div class="user-cell">
+                <div class="avatar">{{ (u.nombreUsuario || '?').charAt(0) | uppercase }}</div>
+                <div class="meta">
+                  <div class="name">{{ u.nombreUsuario }}</div>
+                  <div class="muted" *ngIf="estaEnLinea(u)">Ahora mismo</div>
+                  <div class="muted" *ngIf="!estaEnLinea(u)">Desconectado</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge role-badge"
+                [class.bg-primary]="u.roles?.[0]==='ADMIN'"
+                [class.bg-warning]="u.roles?.[0]==='SUPERVISOR'"
+                [class.bg-info]="u.roles?.[0]==='OPERADOR'">
+                {{ (u.roles?.[0] || '').toUpperCase() }}
+              </span>
+            </td>
+            <td>
+              <span class="chip" [class.chip-green]="u.activo" [class.chip-gray]="!u.activo">
+                {{ u.activo ? 'Sí' : 'No' }}
+              </span>
+            </td>
+            <td>
+              <span class="state"
+                [class.ok]="estaEnLinea(u)"
+                [class.off]="!estaEnLinea(u)">
+                <span class="dot"></span>
+                {{ estaEnLinea(u) ? 'Conectado' : 'Desconectado' }}
+              </span>
+            </td>
+            <td>
+              <span class="muted">
+                {{ u.ultimaConexion ? (u.ultimaConexion | date:'yyyy-MM-dd HH:mm') : '' }}
+              </span>
+            </td>
+            <td class="text-center actions-cell">
+              <button type="button" class="btn-icon primary" (click)="openEdit(u)" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn-icon danger" (click)="eliminar(u)" title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filtrar().length===0">
+            <td colspan="6" class="empty">Sin resultados para {{filtro}}.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal editar usuario -->
+  <div class="modal-backdrop" *ngIf="editOpen" (click)="closeEdit()"></div>
+  <div class="modal" *ngIf="editOpen">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5>Editar Usuario</h5>
+        <button type="button" class="btn-close" (click)="closeEdit()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="editNombre" class="form-label">Nombre de Usuario</label>
+          <input type="text" class="form-control" id="editNombre" [(ngModel)]="editForm.nombreUsuario">
+        </div>
+        <div class="mb-3">
+          <label for="editRol" class="form-label">Rol</label>
+          <select class="form-select" id="editRol" [(ngModel)]="editForm.rol">
+            <option value="ADMIN">ADMIN</option>
+            <option value="SUPERVISOR">SUPERVISOR</option>
+            <option value="OPERADOR">OPERADOR</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEdit()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="saveEdit()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

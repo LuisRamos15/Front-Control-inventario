@@ -46,3 +46,28 @@
 }
 
 .menu a:hover, .menu button:hover{ background:#f2f6ff; color:#0b4ea2; }
+
+.user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name { font-weight: 600; }
+
+.user-role { opacity: .85; }
+
+.user-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-online .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.sep { opacity: .5; }

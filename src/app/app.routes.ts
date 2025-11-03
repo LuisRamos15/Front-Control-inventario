@@ -44,6 +44,13 @@ export const routes: Routes = [
               .then(m => m.ReportesModule),
           title: 'Reportes'
         },
+        {
+          path: 'usuarios',
+          loadChildren: () =>
+            import('./features/usuarios/usuarios.module')
+              .then(m => m.UsuariosModule),
+          title: 'Usuarios'
+        },
        { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
      ],
    },

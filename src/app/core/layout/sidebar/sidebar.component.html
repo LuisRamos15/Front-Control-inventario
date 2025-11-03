@@ -33,9 +33,13 @@
       <i class="ri-alert-line"></i>
       <span>Alertas</span>
     </a>
-    <a class="sidenav-link" [routerLink]="'/reportes'" routerLinkActive="active">
-      <i class="ri-bar-chart-line"></i>
-      <span>Reportes</span>
-    </a>
+     <a class="sidenav-link" [routerLink]="'/reportes'" routerLinkActive="active">
+       <i class="ri-bar-chart-line"></i>
+       <span>Reportes</span>
+     </a>
+     <a class="sidenav-link" *ngIf="authService.hasRole('ADMIN')" [routerLink]="'/usuarios'" routerLinkActive="active">
+       <i class="bi bi-people"></i>
+       <span>Usuarios</span>
+     </a>
   </nav>
 </aside>
