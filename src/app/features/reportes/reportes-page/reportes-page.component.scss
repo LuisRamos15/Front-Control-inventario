@@ -247,16 +247,18 @@ li {
 }
 
 .chart-tendencias {
-  background: #ffffff;
+  background: #fff;
   border-radius: 12px;
-  padding: 1rem 2rem;
-  height: 220px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease-in-out;
+  padding: 1.2rem 2rem;
+  height: 200px; /* ajustado */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
 
-  &:hover {
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  }
+/* Sección de estadísticas y rotación */
+.chart-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 1.5rem;
 }
 
 .chart-consumo-rotacion {
@@ -269,12 +271,21 @@ li {
     border-radius: 12px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
     padding: 1rem;
-    height: 250px;
+    height: 220px;
   }
 }
 
 canvas {
   width: 100% !important;
+}
+
+/* Contenedor principal */
+.reportes-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 2rem 2rem;
+  background-color: #f7f9fc;
 }
 
 .reportes-dashboard {

@@ -36,13 +36,15 @@ export class ProductoModalComponent implements OnChanges {
   };
 
   
-  sugerencias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
+   categorias = ['Tecnología', 'Auriculares', 'Accesorios', 'Laptops', 'Limpieza'];
 
-  constructor(
-    private productosService: ProductosService,
-    private auth: AuthService,
-    private fb: FormBuilder
-  ) {
+   control(name: string) { return this.form.get(name)!; }
+
+   constructor(
+     private productosService: ProductosService,
+     private auth: AuthService,
+     private fb: FormBuilder
+   ) {
     this.form = this.fb.group({
       sku: ['', [Validators.required]],
       nombre: ['', [Validators.required]],

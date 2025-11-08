@@ -64,9 +64,9 @@ Chart.register(...registerables);
         </div>
       </div>
 
-       <div class="card">
+        <div class="card">
          <div class="card-title">Top Productos</div>
-         <ul class="top-list">
+         <ul class="top-productos top-list">
            <li *ngFor="let p of top()">
              <span class="sku">{{p.sku}}</span>
              <span class="name">{{p.nombre}}</span>
@@ -95,7 +95,7 @@ Chart.register(...registerables);
    .status { margin-left:auto; background:#e8f5e9; color:#2e7d32; padding:6px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; gap:6px; }
    .status .dot { width:8px; height:8px; border-radius:50%; background:#2ecc71; display:inline-block; }
 
-  .kpis { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; }
+   .kpis { display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; margin-bottom: 1.5rem; }
   .kpi { background:#fff; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(13,71,161,.06); display:flex; align-items:center; gap:12px; }
   .icon.circ { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; color:#fff; font-size:18px; }
   .icon.blue { background:#2d7ff9; }
@@ -105,21 +105,29 @@ Chart.register(...registerables);
   .desc { font-size:12px; opacity:.8; }
   .val { font-size:22px; font-weight:800; letter-spacing:.4px; }
 
-  .charts { display:grid; grid-template-columns: 1fr 1fr; gap:14px; min-height:320px; }
-  .chart-box { height: 280px; }
-  .card { background:#fff; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(13,71,161,.06); }
-  .card-title { font-weight:700; margin-bottom:8px; }
+   .charts { display:grid; grid-template-columns: 1fr 1fr; gap:14px; min-height:320px; margin-bottom: 1.5rem; }
+   .chart-box { background: #fff; border-radius: 12px; padding: 1.5rem; min-height: 280px; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); }
+   h5, h6 { font-weight: 600; margin-bottom: 0.75rem; color: #2f3e46; }
+   .top-productos { background: #fff; border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1rem; font-size: 0.9rem; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03); }
+    .card { background:#fff; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(13,71,161,.06); transition: box-shadow 0.3s ease; }
+   .card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+   .card-title { font-weight:700; margin-bottom:8px; text-align: center; }
   .top-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
   .top-list li { display:grid; grid-template-columns: 120px 1fr 60px; gap:10px; }
   .sku { color:#5a6; font-weight:600; }
   .name { opacity:.9; }
   .qty { text-align:right; font-weight:700; }
 
-  .alerts .alert-row { padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:14px; }
-  .alerts .warn { background:#ffebee; color:#c62828; }
-  .alerts .low { background:#fff8e1; color:#b08900; }
-  .alerts .info { background:#e3f2fd; color:#1565c0; }
-  `]
+   .alerts { margin-bottom: 1.5rem; }
+   .alerts .alert-row { padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:14px; }
+   .alerts .warn { background:#ffebee; color:#c62828; }
+   .alerts .low { background:#fff8e1; color:#b08900; }
+   .alerts .info { background:#e3f2fd; color:#1565c0; }
+
+   @media (max-width: 768px) {
+     .charts { grid-template-columns: 1fr; }
+   }
+   `]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private resumenSig = signal<Resumen | null>(null);
@@ -153,11 +161,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   barType: ChartType = 'bar';
   barData: ChartConfiguration['data'] = { labels: [], datasets: [] };
-  barOptions: ChartConfiguration['options'] = {
-    ...commonOptionsBase,
-    plugins: { ...commonOptionsBase.plugins, legend: { ...commonOptionsBase.plugins!.legend, display: true } },
-    scales: { ...commonOptionsBase.scales, x: { ...commonOptionsBase.scales!['x'], stacked: false } }
-  };
+   barOptions: ChartConfiguration['options'] = {
+     ...commonOptionsBase,
+     plugins: { ...commonOptionsBase.plugins, legend: { ...commonOptionsBase.plugins!.legend, display: true, position: 'left', align: 'center' } },
+     scales: { ...commonOptionsBase.scales, x: { ...commonOptionsBase.scales!['x'], stacked: false } }
+   };
 
   constructor(private api: DashboardService, private auth: AuthService, private websocket: WebSocketService) {
     this.cargar();
