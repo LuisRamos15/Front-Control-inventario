@@ -32,7 +32,7 @@ constructor(private zone: NgZone) {}
 init(): void {
 if (this.client?.active) return;
 
-const wsUrl = environment.wsUrl;
+const wsUrl = environment.wsBase;
 
  this.client = new Client({
 

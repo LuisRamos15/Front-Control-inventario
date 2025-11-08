@@ -23,8 +23,8 @@ export class WebSocketService {
   public productos$ = this.productosSubject.asObservable();
 
   constructor(private auth: AuthService, private toast: ToastService) {
-     this.client = new Client({
-       brokerURL: environment.wsUrl,
+      this.client = new Client({
+        brokerURL: environment.wsBase,
        debug: () => {},
        reconnectDelay: 5000,
        heartbeatIncoming: 4000,

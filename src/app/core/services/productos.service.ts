@@ -37,10 +37,7 @@ interface PageResp<T> {
 @Injectable({ providedIn: 'root' })
 export class ProductosService {
 
-private readonly apiRoot = (() => {
- const raw = (environment.apiBase || '').trim();
-return raw.endsWith('/api') ? raw : `${raw}/api`;
-})();
+private readonly apiRoot = environment.apiBase;
 
 
 private base = `${this.apiRoot}/productos`;
