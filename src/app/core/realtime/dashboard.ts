@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Resumen, MovimientoDia, TopProducto } from '../../shared/models/dashboard.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DashboardService {
 
-  private base = '/api/dashboard';
+  private base = `${environment.apiUrl}/dashboard`;
 
   constructor(private http: HttpClient) {}
 

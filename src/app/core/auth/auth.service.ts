@@ -31,7 +31,7 @@ export class AuthService {
     this.refreshFromToken();
   }
 
-  private base = `${environment.apiUrl}/api/auth`;
+  private base = `${environment.apiUrl}/auth`;
 
   login(body: LoginReq) { return this.http.post<LoginRes>(`${this.base}/login`, body); }
 

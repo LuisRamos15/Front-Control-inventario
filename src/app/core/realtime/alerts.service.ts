@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { WebSocketService } from './websocket.service';
 import { ToastService } from '../../shared/ui/toast/toast.service';
 import { AuthService } from '../auth/auth.service';
+import { environment } from '../../../environments/environment';
 
 export type AlertaNivel = 'CRITICA' | 'ADVERTENCIA' | 'INFO';
 
@@ -41,7 +42,7 @@ export class AlertsService {
   private readonly _list$ = new BehaviorSubject<AlertaItem[]>(this.load());
   readonly list$ = this._list$.asObservable();
 
-  private readonly baseUrl = '/api/alertas';
+  private readonly baseUrl = `${environment.apiUrl}/alertas`;
 
   constructor(
     private readonly http: HttpClient,
