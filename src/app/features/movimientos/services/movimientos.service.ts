@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 export interface Movimiento {
   id: string;
@@ -31,6 +32,8 @@ export interface PageResp<T> {
 
 @Injectable({ providedIn: 'root' })
 export class MovimientosService {
+  private base = `${environment.apiUrl}this.base`;
+
   constructor(private http: HttpClient) {}
 
   listar(params: {
@@ -41,7 +44,7 @@ export class MovimientosService {
     Object.entries(params || {}).forEach(([k, v]) => {
       if (v !== undefined && v !== null && v !== '') p = p.set(k, String(v));
     });
-    return this.http.get<PageResp<Movimiento>>('/api/movimientos', { params: p });
+    return this.http.get<PageResp<Movimiento>>(this.base, { params: p });
   }
 
   listarPaginado(params: {
@@ -55,15 +58,15 @@ export class MovimientosService {
     if (params.desde) p.desde = params.desde;
     if (params.hasta) p.hasta = params.hasta;
     if (params.sort) p.sort = params.sort;
-    return this.http.get<PageResp<Movimiento>>('/api/movimientos', { params: p });
+    return this.http.get<PageResp<Movimiento>>(this.base, { params: p });
   }
 
   recientes(limit = 10): Observable<PageResp<Movimiento>> {
-    return this.http.get<PageResp<Movimiento>>('/api/movimientos/recientes', { params: { limit } as any });
+    return this.http.get<PageResp<Movimiento>>(`${this.base}/recientes`, { params: { limit } as any });
   }
 
   registrar(body: MovimientoCreate): Observable<void> {
-    return this.http.post<void>('/api/movimientos', body);
+    return this.http.post<void>(this.base, body);
   }
 }
 

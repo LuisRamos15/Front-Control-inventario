@@ -5,6 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
@@ -12,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let request = req;
 
-  if (req.url.startsWith('/api')) {
+  if (req.url.startsWith(environment.apiUrl)) {
     const token = auth.getToken();
     if (token) {
       request = req.clone({

@@ -2,10 +2,8 @@ export const environment = {
 
 production: false,
 
-apiUrl: '/api',        
+apiUrl: 'http://localhost:8080',
 
-wsUrl: '/ws',          
-
-topicProductos: '/topic/productos'
+wsUrl: 'ws://localhost:8080/ws'
 
 };

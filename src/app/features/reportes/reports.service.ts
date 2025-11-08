@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { forkJoin, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 type Producto = {
   id: string; nombre: string; sku: string;
@@ -22,7 +23,7 @@ type Movimiento = {
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
 
-  private base = '/api';
+  private base = `${environment.apiUrl}/api`;
 
   constructor(private http: HttpClient) {}
 

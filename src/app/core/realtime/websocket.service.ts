@@ -26,14 +26,13 @@ export class WebSocketService {
   constructor(private auth: AuthService, private toast: ToastService) {
     this.client = new Client({
       webSocketFactory: () => new SockJS(environment.wsUrl),
-      debug: (str) => console.log(str),
+      debug: () => {},
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
 
     this.client.onConnect = (frame) => {
-      console.log('Connected: ' + frame);
 
       if (!this.alertasSubscribed) {
         this.alertasSubscribed = true;
@@ -73,7 +72,6 @@ export class WebSocketService {
   }
 
   connect() {
-    console.log("Conectando al servidor...");
   }
 
   disconnect() {

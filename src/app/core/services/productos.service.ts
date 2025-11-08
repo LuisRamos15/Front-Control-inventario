@@ -73,7 +73,7 @@ private base = `${this.apiRoot}/productos`;
   }
 
   crearProducto(body: ProductoCreate): Observable<Producto> {
-    return this.http.post<Producto>('/api/productos', body);
+    return this.http.post<Producto>(this.base, body);
   }
 }
 

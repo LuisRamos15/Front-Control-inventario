@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AlertaEvent } from '../../shared/models/alerta.model';
+import { environment } from '../../../environments/environment';
 
 export interface Resumen {
   totalProductos: number;
@@ -15,7 +16,7 @@ export interface TopProducto { sku: string; nombre: string; cantidad: number; }
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private base = '/api/dashboard';
+  private base = `${environment.apiUrl}/api/dashboard`;
   constructor(private http: HttpClient) {}
 
   resumen() {

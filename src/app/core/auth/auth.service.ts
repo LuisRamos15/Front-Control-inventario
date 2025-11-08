@@ -31,14 +31,14 @@ export class AuthService {
     this.refreshFromToken();
   }
 
-  private base = '/api/auth';
+  private base = `${environment.apiUrl}/api/auth`;
 
   login(body: LoginReq) { return this.http.post<LoginRes>(`${this.base}/login`, body); }
 
   registro(body: UsuarioReq) { return this.http.post(`${this.base}/registro`, body); }
 
   register(dto: { nombreUsuario: string; password: string; roles?: string[] }) {
-    return this.http.post(`${environment.apiUrl}/auth/registro`, dto);
+    return this.http.post(`${this.base}/registro`, dto);
   }
 
   getToken(): string | null {

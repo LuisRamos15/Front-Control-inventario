@@ -75,7 +75,7 @@ private base = `${this.apiRoot}/productos`;
   }
 
   crearProducto(body: ProductoCreate): Observable<Producto> {
-    return this.http.post<Producto>('/api/productos', body);
+    return this.http.post<Producto>(this.base, body);
   }
 
   actualizarProducto(
@@ -89,12 +89,12 @@ private base = `${this.apiRoot}/productos`;
       stockMaximo: number;
     }>
   ): Observable<Producto> {
-    return this.http.patch<Producto>(`/api/productos/${id}`, body);
+    return this.http.patch<Producto>(`${this.base}/${id}`, body);
   }
 
   
   eliminarProducto(id: string): Observable<{ message?: string; id?: string }> {
-    return this.http.delete<{ message?: string; id?: string }>(`/api/productos/${id}`);
+    return this.http.delete<{ message?: string; id?: string }>(`${this.base}/${id}`);
   }
 }
 
