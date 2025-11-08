@@ -10,9 +10,9 @@
     }
   ],
   "routes": [
-    { "source": "/api/:path*", "destination": "https://backend-control-inventario-desplegar.onrender.com/api/:path*" },
-    { "source": "/ws", "destination": "https://backend-control-inventario-desplegar.onrender.com/ws" },
+    { "src": "/api/(.*)", "dest": "https://backend-control-inventario-desplegar.onrender.com/api/$1" },
+    { "src": "/ws", "dest": "https://backend-control-inventario-desplegar.onrender.com/ws" },
     { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
