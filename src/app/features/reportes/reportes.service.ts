@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ReportesService {
 
-  private base = `${environment.apiUrl}/reportes`;
+  private base = `${environment.apiBase}/api/reportes`;
 
   constructor(private http: HttpClient) {}
 
@@ -31,7 +31,7 @@ export class ReportesService {
   }
 
   getResumenDashboard(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/dashboard/resumen`);
+    return this.http.get(`${environment.apiBase}/api/dashboard/resumen`);
   }
 
   getProductos() {
@@ -43,7 +43,7 @@ export class ReportesService {
     if (params?.desde) q.set('desde', params.desde);
     if (params?.hasta) q.set('hasta', params.hasta);
     const qs = q.toString();
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/movimientos-por-dia${qs ? '?' + qs : ''}`);
+    return this.http.get<any[]>(`${environment.apiBase}/api/dashboard/movimientos-por-dia${qs ? '?' + qs : ''}`);
   }
 
   getTopProductos(tipo: 'ENTRADA'|'SALIDA' = 'SALIDA', limit = 5, rango?: {desde?: string; hasta?: string}) {
@@ -52,7 +52,7 @@ export class ReportesService {
     q.set('limit', String(limit));
     if (rango?.desde) q.set('desde', rango.desde);
     if (rango?.hasta) q.set('hasta', rango.hasta);
-    return this.http.get<any[]>(`${environment.apiUrl}/dashboard/top-productos?${q.toString()}`);
+    return this.http.get<any[]>(`${environment.apiBase}/api/dashboard/top-productos?${q.toString()}`);
   }
 
   triggerDownload(blob: Blob, filename: string) {

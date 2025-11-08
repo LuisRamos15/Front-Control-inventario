@@ -38,7 +38,7 @@ interface PageResp<T> {
 export class ProductosService {
 
 private readonly apiRoot = (() => {
-const raw = (environment.apiUrl || '').trim();
+ const raw = (environment.apiBase || '').trim();
 return raw.endsWith('/api') ? raw : `${raw}/api`;
 })();
 

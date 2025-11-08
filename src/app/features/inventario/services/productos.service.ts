@@ -39,7 +39,7 @@ interface PageResp<T> {
 export class ProductosService {
 
 private readonly apiRoot = (() => {
-const raw = (environment.apiUrl || '').trim();
+ const raw = (environment.apiBase || '').trim();
 const withLeading = raw.startsWith('http') ? raw : `/${raw.replace(/^\/+/, '')}`;
 const noTrail = withLeading.replace(/\/+$/, '');
 return noTrail.endsWith('/api') ? noTrail : `${noTrail}/api`;

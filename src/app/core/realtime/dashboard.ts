@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment';
 })
 export class DashboardService {
 
-  private base = `${environment.apiUrl}/dashboard`;
+  private base = `${environment.apiBase}/api/dashboard`;
 
   constructor(private http: HttpClient) {}
 

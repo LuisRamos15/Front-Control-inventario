@@ -32,7 +32,7 @@ export interface PageResp<T> {
 
 @Injectable({ providedIn: 'root' })
 export class MovimientosService {
-  private base = `${environment.apiUrl}/movimientos`;
+  private base = `${environment.apiBase}/api/movimientos`;
 
   constructor(private http: HttpClient) {}
 

@@ -23,7 +23,7 @@ type Movimiento = {
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
 
-  private base = environment.apiUrl;
+  private base = `${environment.apiBase}/api`;
 
   constructor(private http: HttpClient) {}
 

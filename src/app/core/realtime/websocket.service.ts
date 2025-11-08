@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Client, Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { environment } from '../../../environments/environment';
+ import { Injectable } from '@angular/core';
+ import { Client } from '@stomp/stompjs';
+ import { environment } from '../../../environments/environment';
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { ToastService } from '../../shared/ui/toast/toast.service';
@@ -24,13 +23,13 @@ export class WebSocketService {
   public productos$ = this.productosSubject.asObservable();
 
   constructor(private auth: AuthService, private toast: ToastService) {
-    this.client = new Client({
-      webSocketFactory: () => new SockJS(environment.wsUrl),
-      debug: () => {},
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-    });
+     this.client = new Client({
+       webSocketFactory: () => new SockJS(environment.wsUrl),
+       debug: () => {},
+       reconnectDelay: 5000,
+       heartbeatIncoming: 4000,
+       heartbeatOutgoing: 4000,
+     });
 
     this.client.onConnect = (frame) => {
 
