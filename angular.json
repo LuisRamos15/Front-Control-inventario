@@ -17,47 +17,48 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/front-control-inventario",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js",
               "src/polyfills.ts"
             ],
-             "allowedCommonJsDependencies": [
-               "@stomp/stompjs",
-               "sockjs-client"
-             ],
-             "tsConfig": "tsconfig.app.json",
-             "inlineStyleLanguage": "scss",
-             "assets": [
-               "src/favicon.ico",
-               "src/assets",
-               {
-                 "glob": "**/*",
-                 "input": "public",
-                 "output": "/"
-               }
-             ],
-             "styles": [
-               "src/styles.scss"
-             ]
+            "allowedCommonJsDependencies": [
+              "@stomp/stompjs",
+              "sockjs-client"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
-             "production": {
-                "budgets": [
-                  {
-                    "type": "initial",
-                    "maximumWarning": "500kB",
-                    "maximumError": "2MB"
-                  },
-                  {
-                    "type": "anyComponentStyle",
-                    "maximumWarning": "4kB",
-                    "maximumError": "8kB"
-                  }
-                ],
-               "outputHashing": "all",
-               "optimization": true
-             },
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "2MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all",
+              "optimization": true
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -66,21 +67,21 @@
           },
           "defaultConfiguration": "production"
         },
-         "serve": {
-           "builder": "@angular/build:dev-server",
-           "options": {
-             "proxyConfig": "proxy.conf.json"
-           },
-           "configurations": {
-             "production": {
-               "buildTarget": "front-control-inventario:build:production"
-             },
-             "development": {
-               "buildTarget": "front-control-inventario:build:development"
-             }
-           },
-           "defaultConfiguration": "development"
-         },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "front-control-inventario:build:production"
+            },
+            "development": {
+              "buildTarget": "front-control-inventario:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n"
         },
