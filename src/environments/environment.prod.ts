@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://localhost:8080/api',
-  wsUrl: 'wss://localhost:8080/ws'
+  apiUrl: 'https://backend-control-inventario-desplegar.onrender.com/api',
+  wsUrl: 'https://backend-control-inventario-desplegar.onrender.com/ws'
 };

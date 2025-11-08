@@ -16,7 +16,7 @@ export interface TopProducto { sku: string; nombre: string; cantidad: number; }
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private base = `${environment.apiUrl}/api/dashboard`;
+  private base = `${environment.apiUrl}/dashboard`;
   constructor(private http: HttpClient) {}
 
   resumen() {
