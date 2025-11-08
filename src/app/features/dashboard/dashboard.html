@@ -1,43 +1,63 @@
 <div class="dashboard">
   <h1>Dashboard</h1>
 
-  <div class="cards" *ngIf="resumen">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Total Productos</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        {{ resumen.totalProductos }}
-      </mat-card-content>
-    </mat-card>
+   <div class="cards" *ngIf="resumen">
+     <mat-card>
+       <mat-card-content>
+         <div class="card-item">
+           <div class="card-icon">
+             <img src="assets/productos.png" alt="Total de Productos" class="kpi-icon" width="48" height="48">
+           </div>
+           <div class="card-content">
+             <h4>Total de Productos</h4>
+             <p>{{ resumen.totalProductos }}</p>
+           </div>
+         </div>
+       </mat-card-content>
+     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Total Movimientos</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        {{ resumen.totalMovimientos }}
-      </mat-card-content>
-    </mat-card>
+     <mat-card>
+       <mat-card-content>
+         <div class="card-item">
+           <div class="card-icon">
+             <img src="assets/stock-bajo.png" alt="Stock Bajo" class="kpi-icon" width="48" height="48">
+           </div>
+           <div class="card-content">
+             <h4>Stock Bajo</h4>
+             <p>{{ resumen.stockBajo }}</p>
+           </div>
+         </div>
+       </mat-card-content>
+     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Total Entradas</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        {{ resumen.totalEntradas }}
-      </mat-card-content>
-    </mat-card>
+     <mat-card>
+       <mat-card-content>
+         <div class="card-item">
+           <div class="card-icon">
+             <img src="assets/movimientos.png" alt="Movimientos Hoy" class="kpi-icon" width="48" height="48">
+           </div>
+           <div class="card-content">
+             <h4>Movimientos Hoy</h4>
+             <p>{{ resumen.movimientosHoy }}</p>
+           </div>
+         </div>
+       </mat-card-content>
+     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Total Salidas</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        {{ resumen.totalSalidas }}
-      </mat-card-content>
-    </mat-card>
-  </div>
+     <mat-card>
+       <mat-card-content>
+         <div class="card-item">
+           <div class="card-icon">
+             <img src="assets/alerta.png" alt="Alertas Activas" class="kpi-icon" width="48" height="48">
+           </div>
+           <div class="card-content">
+             <h4>Alertas Activas</h4>
+             <p>{{ resumen.alertasActivas }}</p>
+           </div>
+         </div>
+       </mat-card-content>
+     </mat-card>
+   </div>
 
   <div class="charts">
     <div class="chart">

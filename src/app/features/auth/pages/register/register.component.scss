@@ -33,3 +33,7 @@ small { opacity: .75; }
 .links { margin-top: 8px; text-align: right; }
 
 .roles { margin-top: 6px; opacity: .6; font-size: 12px; text-align: center; }
+
+.zfix-roles {
+  z-index: 1000;
+}

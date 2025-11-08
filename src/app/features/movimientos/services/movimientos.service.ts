@@ -44,6 +44,20 @@ export class MovimientosService {
     return this.http.get<PageResp<Movimiento>>('/api/movimientos', { params: p });
   }
 
+  listarPaginado(params: {
+    page?: number; size?: number; tipo?: 'ENTRADA' | 'SALIDA';
+    desde?: string; hasta?: string; sort?: string;
+  }) {
+    const p: any = {};
+    if (params.page !== undefined) p.page = params.page;
+    if (params.size !== undefined) p.size = params.size;
+    if (params.tipo) p.tipo = params.tipo;
+    if (params.desde) p.desde = params.desde;
+    if (params.hasta) p.hasta = params.hasta;
+    if (params.sort) p.sort = params.sort;
+    return this.http.get<PageResp<Movimiento>>('/api/movimientos', { params: p });
+  }
+
   recientes(limit = 10): Observable<PageResp<Movimiento>> {
     return this.http.get<PageResp<Movimiento>>('/api/movimientos/recientes', { params: { limit } as any });
   }

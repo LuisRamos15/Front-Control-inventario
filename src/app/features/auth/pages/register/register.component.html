@@ -52,15 +52,11 @@
 
 <mat-label>Rol</mat-label>
 
-<mat-select formControlName="rol">
+  <mat-select formControlName="rol" panelClass="zfix-roles">
 
-<mat-option value="OPERADOR">Operador</mat-option>
+  <mat-option *ngFor="let opt of roleOptions" [value]="opt.value">{{ opt.label }}</mat-option>
 
-<mat-option value="SUPERVISOR">Supervisor</mat-option>
-
-<mat-option value="ADMIN">Administrador</mat-option>
-
-</mat-select>
+  </mat-select>
 
 </mat-form-field>
 

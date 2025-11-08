@@ -12,6 +12,46 @@ mat-card {
   flex: 1;
 }
 
+.card-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-icon {
+}
+
+.card-content {
+  text-align: center;
+}
+
+.card-content h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.card-content p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.kpi-icon:hover {
+  transform: scale(1.05);
+}
+
 .charts {
   display: flex;
   gap: 40px;

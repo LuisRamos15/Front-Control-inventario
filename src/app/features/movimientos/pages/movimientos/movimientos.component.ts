@@ -1,5 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
 import { MovimientosService, Movimiento, PageResp } from '../../services/movimientos.service';
 
 import { AuthService } from '../../../../core/auth/auth.service';
@@ -10,12 +13,14 @@ import { Subscription } from 'rxjs';
 
 import { MovimientoModalComponent } from '../../components/movimiento-modal/movimiento-modal.component';
 
+type TipoMovimiento = 'ENTRADA' | 'SALIDA';
+
 @Component({
   selector: 'app-movimientos',
 
   standalone: true,
 
-  imports: [CommonModule, DatePipe, MovimientoModalComponent ],
+  imports: [CommonModule, DatePipe, MovimientoModalComponent, MatTableModule, MatPaginatorModule ],
 
   templateUrl: './movimientos.component.html',
 
@@ -25,19 +30,33 @@ import { MovimientoModalComponent } from '../../components/movimiento-modal/movi
 
 export class MovimientosComponent implements OnInit, OnDestroy {
 
-  tab: 'TODOS'|'ENTRADAS'|'SALIDAS' = 'TODOS';
+  activeTab: 'TODOS' | 'ENTRADA' | 'SALIDA' = 'TODOS';
 
-  page = 0; size = 10; total = 0;
+  // estado de paginación (SIEMPRE controlado por backend)
+
+  pageIndex = 0;        // 0-based
+
+  pageSize  = 5;
+
+  total     = 0;
+
+  // opciones visibles (agregamos 'Todo' con -1 como centinela)
+
+  pageSizeOpts = [5, 10, 20];
+
+  mostrarTodo = false;  // true => traer todos
+
+  // datos
+
+  filas: Movimiento[] = [];
+
+  displayedColumns: string[] = ['fecha', 'tipo', 'producto', 'cantidad', 'usuario', 'motivo', 'notas'];
 
   cargando = false;
 
-   data: Movimiento[] = [];
+  modalOpen = false;
 
-   modalOpen = false;
-
-   
-
-   showNuevoModal = false;
+  showNuevoModal = false;
 
   private wsSub?: Subscription;
 
@@ -55,11 +74,10 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.load();
+    this.cargarPagina();
 
-     this.wsSub = this.ws.movimientos$.subscribe(() => {
-      this.page = 0;
-      this.load();
+    this.wsSub = this.ws.movimientos$.subscribe(() => {
+      this.cargarPagina();
     });
 
   }
@@ -70,55 +88,109 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
   }
 
-  setTab(t: 'TODOS'|'ENTRADAS'|'SALIDAS') {
+  seleccionarTab(tab: 'TODOS' | 'ENTRADA' | 'SALIDA') {
 
-    this.page = 0;
+    if (this.activeTab === tab) return;
 
-    this.load();
+    this.activeTab = tab;
+
+    this.pageIndex = 0;
+
+    this.cargarPagina();
 
   }
 
-  load(): void {
+  // evento del paginator (siguiente/anterior o cambio de size 5/10/20)
 
-     this.cargando = true;
+  onPage(ev: PageEvent) {
 
-     const tipo = this.tab === 'TODOS' ? '' : (this.tab === 'ENTRADAS' ? 'ENTRADA' : 'SALIDA');
+    this.mostrarTodo = false;   // al cambiar aquí, quitamos 'Todo'
 
-     this.svc.listar({ page: this.page, size: this.size, sort: 'fecha,desc', tipo })
+    this.pageIndex = ev.pageIndex;
 
-     .subscribe({
+    this.pageSize  = ev.pageSize;
 
-       next: (resp: PageResp<Movimiento>) => {
+    this.cargarPagina();
 
-         this.data = resp.content;
+  }
 
-         this.total = resp.totalElements;
+  // click en 'Todo'
 
-         this.cargando = false;
+  verTodo() {
 
-       },
+    this.mostrarTodo = true;
 
-       error: (e) => { console.error(e); this.cargando = false; }
+    this.pageIndex = 0;
 
-     });
+    // estrategia robusta: 1) pedir total, 2) pedir todo
 
-   }
+    this.svc.listarPaginado({
 
-   openNuevoMovimiento(){ if (this.canOpen) { this.showNuevoModal = true; } }
+      page: 0,
 
-   closeNuevoMovimiento(){ this.showNuevoModal = false; }
+      size: 1,
 
-    onMovimientoGuardado(payload: any) {
+      tipo: this.activeTab === 'TODOS' ? undefined : this.activeTab,
 
-      const req = {
+      sort: 'fecha,desc'
 
-        productoId: payload.productoId,
+    }).subscribe(resp1 => {
 
-        tipo: payload.tipo,
+      const total = resp1?.totalElements ?? 0;
 
-        cantidad: payload.cantidad
+      this.pageSize = total || 1; // evita 0
 
-      };
+      this.cargarPagina();
+
+    });
+
+  }
+
+  private cargarPagina() {
+
+    const tipo = this.activeTab === 'TODOS' ? undefined : this.activeTab;
+
+    this.svc.listarPaginado({
+
+      page: this.pageIndex,
+
+      size: this.pageSize,
+
+      tipo,
+
+      sort: 'fecha,desc'
+
+    }).subscribe((resp: PageResp<Movimiento>) => {
+
+      this.filas     = resp?.content ?? [];
+
+      this.total     = resp?.totalElements ?? 0;
+
+      this.pageIndex = resp?.number ?? this.pageIndex;
+
+      this.pageSize  = this.mostrarTodo ? (resp?.totalElements ?? this.pageSize)
+
+        : (resp?.size ?? this.pageSize);
+
+    });
+
+  }
+
+  openNuevoMovimiento(){ if (this.canOpen) { this.showNuevoModal = true; } }
+
+  closeNuevoMovimiento(){ this.showNuevoModal = false; }
+
+  onMovimientoGuardado(payload: any) {
+
+    const req = {
+
+      productoId: payload.productoId,
+
+      tipo: payload.tipo,
+
+      cantidad: payload.cantidad
+
+    };
 
       this.svc.registrar(req).subscribe({
 
@@ -126,7 +198,7 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
          this.closeNuevoMovimiento();
 
-         this.load();
+         this.cargarPagina();
 
        },
 
@@ -134,15 +206,9 @@ export class MovimientosComponent implements OnInit, OnDestroy {
 
      });
 
-   }
-
-  pageNext(){ if ((this.page + 1) * this.size < this.total) { this.page++; this.load(); } }
-
-  pagePrev(){ if (this.page > 0) { this.page--; this.load(); } }
+  }
 
   motivoOf(m: Movimiento){ return m.tipo === 'ENTRADA' ? 'Reposición' : 'Venta'; }
-
-  getTotalPages(): number { return Math.max(1, Math.ceil(this.total / this.size)); }
 
 }
 

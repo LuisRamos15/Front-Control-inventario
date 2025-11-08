@@ -5,6 +5,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { WebSocketService } from '../../core/realtime/websocket.service';
 import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { BaseChartDirective, provideCharts } from 'ng2-charts';
+import { commonOptionsBase } from '../../shared/chart-options';
 import { AlertaEvent } from '../../shared/models/alerta.model';
 import { catchError, of } from 'rxjs';
 import { Subscription } from 'rxjs';
@@ -153,10 +154,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   barType: ChartType = 'bar';
   barData: ChartConfiguration['data'] = { labels: [], datasets: [] };
   barOptions: ChartConfiguration['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: true } },
-    scales: { x: { stacked: false }, y: { beginAtZero: true } }
+    ...commonOptionsBase,
+    plugins: { ...commonOptionsBase.plugins, legend: { ...commonOptionsBase.plugins!.legend, display: true } },
+    scales: { ...commonOptionsBase.scales, x: { ...commonOptionsBase.scales!['x'], stacked: false } }
   };
 
   constructor(private api: DashboardService, private auth: AuthService, private websocket: WebSocketService) {

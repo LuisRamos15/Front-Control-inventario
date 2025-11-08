@@ -21,63 +21,61 @@
 
 <div id="printArea" class="mt-24">
   <h2>Resumen de Inventario</h2>
-  <div class="cards">
-     <div class="card">
-       <h3>Total Productos</h3>
-       <h2>{{ totalProductos }}</h2>
-       <p class="muted">Activos en stock</p>
-     </div>
-     <div class="card">
-       <h3>Valor Total</h3>
-       <h2>${{ valorTotal | number:'1.0-0' }}</h2>
-       <p class="muted">Estimado</p>
-     </div>
-     <div class="card">
-       <h3>Productos Bajos</h3>
-       <h2>{{ productosBajos }}</h2>
-       <p class="muted">Necesitan reposición</p>
-     </div>
-     <div class="card">
-       <h3>Categorías</h3>
-       <h2>{{ categorias }}</h2>
-       <p class="muted">Activas</p>
-     </div>
-  </div>
+   <div class="cards">
+      <div class="card h-28 md:h-28">
+        <h3>Total Productos</h3>
+        <h2>{{ totalProductos }}</h2>
+        <p class="muted">Activos en stock</p>
+      </div>
+      <div class="card h-28 md:h-28">
+        <h3>Valor Total</h3>
+        <h2>${{ valorTotal | number:'1.0-0' }}</h2>
+        <p class="muted">Estimado</p>
+      </div>
+      <div class="card h-28 md:h-28">
+        <h3>Productos Bajos</h3>
+        <h2>{{ productosBajos }}</h2>
+        <p class="muted">Necesitan reposición</p>
+      </div>
+      <div class="card h-28 md:h-28">
+        <h3>Categorías</h3>
+        <h2>{{ categorias }}</h2>
+        <p class="muted">Activas</p>
+      </div>
+    </div>
 
-   <div class="mt-24">
-     <h3>Gráfico de Tendencias</h3>
-     <div class="chart-placeholder" style="height:300px; background:#f8f9fa; border:1px dashed #dee2e6; display:flex; align-items:center; justify-content:center; border-radius:8px;">
-       <canvas #trendCanvas aria-label="Tendencias Entradas/Salidas"></canvas>
-     </div>
-   </div>
-</div>
+ <div class="reportes-dashboard">
+        <div class="mt-24 mb-6">
+          <h3>Gráfico de Tendencias</h3>
+          <div class="chart-container chart-tendencias">
+            <canvas #trendCanvas aria-label="Tendencias Entradas/Salidas"></canvas>
+          </div>
+        </div>
 
-<div id="printArea">
-  
-  <section class="grid-2 gap-16 mt-16">
+    <section class="chart-consumo-rotacion mt-16">
     <div class="card p-16">
       <h2 class="section-title">Estadísticas de Consumo</h2>
-       <div class="chart-placeholder">
-         <canvas #consumoCanvas aria-label="Top 5 Salidas"></canvas>
-       </div>
-        <div class="top5 mt-16">
-          <strong>Top 5 Productos Más Vendidos:</strong>
-          <div *ngIf="loadingTop" class="text-gray-500 mt-1">Cargando</div>
-          <ul *ngIf="!loadingTop" class="list-decimal ml-4 mt-1">
-            <li *ngFor="let p of topProductos; index as i">
-              {{ p.nombre || 'Producto' }}
-              <span class="text-gray-500">({{ p.cantidad | number:'1.0-0' }} unidades)</span>
-            </li>
-            <li *ngIf="topProductos.length === 0" class="text-gray-500 list-none ml-0">Sin datos para el periodo.</li>
-          </ul>
-        </div>
+         <div class="chart-box">
+           <canvas #consumoCanvas aria-label="Top 5 Salidas"></canvas>
+         </div>
+         <div class="productos-top">
+           <strong>Top 5 Productos Más Vendidos:</strong>
+           <div *ngIf="loadingTop" class="text-gray-500 mt-1">Cargando</div>
+           <ul *ngIf="!loadingTop" class="list-decimal ml-4 mt-1">
+             <li *ngFor="let p of topProductos; index as i">
+               {{ p.nombre || 'Producto' }}
+               <span class="text-gray-500">({{ p.cantidad | number:'1.0-0' }} unidades)</span>
+             </li>
+             <li *ngIf="topProductos.length === 0" class="text-gray-500 list-none ml-0">Sin datos para el periodo.</li>
+           </ul>
+         </div>
     </div>
 
     <div class="card p-16">
       <h2 class="section-title">Rotación de Productos</h2>
-       <div class="chart-placeholder">
-         <canvas #rotacionCanvas aria-label="Rotación (salidas + media móvil)"></canvas>
-       </div>
+         <div class="chart-box">
+           <canvas #rotacionCanvas aria-label="Rotación (salidas + media móvil)"></canvas>
+         </div>
       <div class="kpis mt-16 d-flex gap-24">
         <div>
           <div class="kpi-number">4.2</div>
@@ -87,12 +85,12 @@
           <div class="kpi-number">7.1</div>
           <div class="muted">Días Promedio</div>
         </div>
-      </div>
-    </div>
-  </section>
+       </div>
+     </div>
+   </section>
+ </div>
 
-  
-  <section class="cards">
+    <section class="cards" *ngIf="false">
     <div class="card">
       <div class="muted">TOTAL INVENTARIO</div>
       <h2>$125,430.50</h2>

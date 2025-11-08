@@ -8,93 +8,106 @@
 
 <nav class="tabs">
 
-<button [class.active]="tab==='TODOS'" (click)="setTab('TODOS')">Todos</button>
+<button type="button" (click)="seleccionarTab('TODOS')"   [class.active]="activeTab==='TODOS'">Todos</button>
 
-<button [class.active]="tab==='ENTRADAS'" (click)="setTab('ENTRADAS')">Entradas</button>
+<button type="button" (click)="seleccionarTab('ENTRADA')" [class.active]="activeTab==='ENTRADA'">Entradas</button>
 
-<button [class.active]="tab==='SALIDAS'" (click)="setTab('SALIDAS')">Salidas</button>
+<button type="button" (click)="seleccionarTab('SALIDA')"  [class.active]="activeTab==='SALIDA'">Salidas</button>
 
 </nav>
 
 <div class="tabla-wrapper">
 
-<table class="tabla">
+<table mat-table [dataSource]="filas" class="tabla">
 
-<thead>
+<ng-container matColumnDef="fecha">
+  <th mat-header-cell *matHeaderCellDef>Fecha/Hora</th>
+  <td mat-cell *matCellDef="let m">{{ m.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+</ng-container>
 
-<tr>
+<ng-container matColumnDef="tipo">
+  <th mat-header-cell *matHeaderCellDef>Tipo</th>
+  <td mat-cell *matCellDef="let m" [class.entrada]="m.tipo==='ENTRADA'" [class.salida]="m.tipo==='SALIDA'">
+    {{ m.tipo }}
+  </td>
+</ng-container>
 
-<th>Fecha/Hora</th>
+<ng-container matColumnDef="producto">
+  <th mat-header-cell *matHeaderCellDef>Producto</th>
+  <td mat-cell *matCellDef="let m" class="prod-cell">
+    <span class="prod-name">{{ m.productoNombre }}</span>
+    <small class="sku-chip">({{ m.sku }})</small>
+  </td>
+</ng-container>
 
-<th>Tipo</th>
+<ng-container matColumnDef="cantidad">
+  <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+  <td mat-cell *matCellDef="let m" [class.pos]="m.tipo==='ENTRADA'" [class.neg]="m.tipo==='SALIDA'">
+    {{ m.tipo==='ENTRADA' ? '+' : '-' }}{{ m.cantidad }}
+  </td>
+</ng-container>
 
-<th>Producto</th>
+<ng-container matColumnDef="usuario">
+  <th mat-header-cell *matHeaderCellDef>Usuario</th>
+  <td mat-cell *matCellDef="let m">{{ m.usuario }}</td>
+</ng-container>
 
-<th>Cantidad</th>
+<ng-container matColumnDef="motivo">
+  <th mat-header-cell *matHeaderCellDef>Motivo</th>
+  <td mat-cell *matCellDef="let m">{{ motivoOf(m) }}</td>
+</ng-container>
 
-<th>Usuario</th>
+<ng-container matColumnDef="notas">
+  <th mat-header-cell *matHeaderCellDef>Notas</th>
+  <td mat-cell *matCellDef="let m"></td>
+</ng-container>
 
-<th>Motivo</th>
+<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-<th>Notas</th>
-
+<tr *matNoDataRow>
+  <td colspan="7" class="muted">Sin registros.</td>
 </tr>
-
-</thead>
-
-<tbody>
-
-<tr *ngFor="let m of data">
-
-<td>{{ m.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
-
-<td [class.entrada]="m.tipo==='ENTRADA'" [class.salida]="m.tipo==='SALIDA'">
-
-{{ m.tipo }}
-
-</td>
-
-<td class="prod-cell">
-
-<span class="prod-name">{{ m.productoNombre }}</span>
-
-<small class="sku-chip">({{ m.sku }})</small>
-
-</td>
-
-<td [class.pos]="m.tipo==='ENTRADA'" [class.neg]="m.tipo==='SALIDA'">
-
-{{ m.tipo==='ENTRADA' ? '+' : '-' }}{{ m.cantidad }}
-
-</td>
-
-<td>{{ m.usuario }}</td>
-
-<td>{{ motivoOf(m) }}</td>
-
-<td></td>
-
-</tr>
-
-<tr *ngIf="!cargando && data.length===0">
-
-<td colspan="7" class="muted">Sin registros.</td>
-
-</tr>
-
-</tbody>
 
 </table>
 
 </div>
 
-<div class="pager">
+<div class="paginator-row">
 
-<button (click)="pagePrev()" [disabled]="page===0">Anterior</button>
+<span class="mr-2">Items per page:</span>
 
-<span>Página {{ page+1 }} / {{ getTotalPages() }}</span>
+<!-- Paginador material (5/10/20) controlado por backend -->
 
-<button (click)="pageNext()" [disabled]="(page+1)*size >= total">Siguiente</button>
+<mat-paginator
+
+[length]="total"
+
+[pageIndex]="pageIndex"
+
+[pageSize]="mostrarTodo ? total : pageSize"
+
+[pageSizeOptions]="pageSizeOpts"
+
+[showFirstLastButtons]="true"
+
+(page)="onPage($event)">
+
+</mat-paginator>
+
+<!-- Botón 'Todo' (no cambia estilos globales) -->
+
+<button type="button"
+
+class="btn btn-link ml-2"
+
+(click)="verTodo()"
+
+[disabled]="mostrarTodo || total <= pageSize">
+
+Todo
+
+</button>
 
 </div>
 

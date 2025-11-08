@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -21,10 +21,14 @@ import { AuthService } from '../../../../core/auth/auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   hide = true;
   loading = false;
   form: any;
+
+  public roleOptions = [
+    { label: 'Operador', value: 'OPERADOR' }
+  ];
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private sb: MatSnackBar) {
     this.form = this.fb.group({
@@ -35,6 +39,10 @@ export class RegisterComponent {
     });
   }
 
+  ngOnInit() {
+    this.form.get('rol')?.setValue('OPERADOR', { emitEvent: false });
+  }
+
   get f() { return this.form.controls; }
 
   submit() {
@@ -43,10 +51,12 @@ export class RegisterComponent {
       this.sb.open('Las contraseñas no coinciden.', 'Cerrar', { duration: 2500 });
       return;
     }
+    const rawRol = (this.form.value.rol || 'OPERADOR').toString().toUpperCase();
+    const safeRol = rawRol === 'ADMIN' ? 'OPERADOR' : rawRol;
     const payload = {
-      nombreUsuario: this.f.nombreUsuario.value!.trim(),
-      password: this.f.password.value!,
-      roles: this.f.rol.value ? [this.f.rol.value!] : undefined
+      nombreUsuario: this.form.value.nombreUsuario,
+      password: this.form.value.password,
+      roles: [safeRol]
     };
     this.loading = true;
     this.auth.registro(payload).subscribe({

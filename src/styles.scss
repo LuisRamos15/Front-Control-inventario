@@ -160,3 +160,17 @@ font-weight: 700;
 width: 18px;
 text-align: center;
 }
+
+html, body, app-root, .app-root {
+caret-color: transparent;
+cursor: default;
+}
+
+input, textarea, [contenteditable="true"] {
+caret-color: auto;
+cursor: text;
+}
+
+.zfix-roles .mat-mdc-select-panel {
+z-index: 1200;
+}

@@ -1,11 +1,17 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { ReportesService } from '../reportes.service';
 import { LiveUpdatesService } from '../../../core/realtime/live-updates.service';
 import { DashboardService } from '../../../core/realtime/dashboard';
 import { TopProducto } from '../../../shared/models/dashboard.models';
 import { finalize } from 'rxjs/operators';
-import { Chart, ChartConfiguration } from 'chart.js';
+import {
+  Chart, ChartOptions, ChartConfiguration,
+  CategoryScale, LinearScale, BarElement, LineElement, PointElement,
+  Tooltip, Legend
+} from 'chart.js';
+
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Tooltip, Legend);
 
 @Component({
   selector: 'app-reportes-page',
@@ -135,26 +141,38 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 8, right: 12, bottom: 6, left: 8 } },
+      plugins: {
+        legend: { position: 'top' as const, labels: { font: { size: 11 }, boxWidth: 12, boxHeight: 12 } },
+        tooltip: { intersect: false, mode: 'index' as const }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { autoSkip: true, maxTicksLimit: 7 } },
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { precision: 0 } }
+      }
+    };
+
     this.reportes.getMovimientosPorDia().subscribe(dias => {
       const labels  = dias.map(d => d.fecha);
       const entradas = dias.map(d => d.entradas ?? 0);
       const salidas  = dias.map(d => d.salidas ?? 0);
+      const tendenciasOptions = {
+        ...commonOptions,
+        datasets: { bar: { categoryPercentage: 0.6, barPercentage: 0.8 } }
+      };
       const cfg: ChartConfiguration<'bar'> = {
         type: 'bar',
         data: {
           labels,
           datasets: [
             { label: 'Entradas', data: entradas },
-            { label: 'Salidas',  data: salidas  }
+            { label: 'Salidas',  data: salidas }
           ]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top' } },
-          scales: { x: { stacked: false }, y: { beginAtZero: true } }
-        }
+        options: tendenciasOptions
       };
       this.trendChart = new Chart(this.trendCanvas.nativeElement.getContext('2d')!, cfg);
     });
@@ -163,16 +181,16 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.reportes.getTopProductos('SALIDA', 5).subscribe(items => {
       const labels = items.map(x => x.nombre || x.sku || 'N/A');
       const data   = items.map(x => x.cantidad ?? 0);
+      const consumoOptions = {
+        ...commonOptions,
+        indexAxis: 'y' as const,
+        datasets: { bar: { barThickness: 18, categoryPercentage: 0.72, barPercentage: 0.9 } },
+        scales: { ...commonOptions.scales, x: { ...commonOptions.scales!['x'], ticks: { maxTicksLimit: 5 } } }
+      };
       const cfg: ChartConfiguration<'bar'> = {
         type: 'bar',
         data: { labels, datasets: [{ label: 'Unidades', data }] },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: { x: { beginAtZero: true } }
-        }
+        options: consumoOptions
       };
       this.consumoChart = new Chart(this.consumoCanvas.nativeElement.getContext('2d')!, cfg);
     });
@@ -182,6 +200,10 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       const labels  = dias.map(d => d.fecha);
       const salidas = dias.map(d => d.salidas ?? 0);
       const mm7 = this.movingAverage(salidas, 7);
+      const rotacionOptions: ChartOptions<'line'> = {
+        ...(commonOptions as ChartOptions<'line'>),
+        elements: { line: { tension: 0.3 }, point: { radius: 2, hitRadius: 6 } }
+      };
       const cfg: ChartConfiguration<'line'> = {
         type: 'line',
         data: {
@@ -191,12 +213,7 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
             { label: 'Media móvil 7d',  data: mm7,     borderDash: [6,4], tension: 0.3 }
           ]
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { position: 'top' } },
-          scales: { y: { beginAtZero: true } }
-        }
+        options: rotacionOptions
       };
       this.rotacionChart = new Chart(this.rotacionCanvas.nativeElement.getContext('2d')!, cfg);
     });
@@ -271,6 +288,13 @@ export class ReportesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     this.trendChart?.destroy();
     this.consumoChart?.destroy();
     this.rotacionChart?.destroy();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.trendChart?.resize();
+    this.consumoChart?.resize();
+    this.rotacionChart?.resize();
   }
 }
 
