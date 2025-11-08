@@ -2,36 +2,42 @@
   "name": "front-control-inventario",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "ng serve",
-    "build": "ng build --configuration production",
-    "build:dev": "ng build",
-    "test": "ng test",
-    "lint": "ng lint"
-  },
   "engines": {
     "node": "22.x"
   },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
+    "test": "ng test"
+  },
   "dependencies": {
-    "@angular/animations": "^17 || ^18 || ^19 || ^20",
-    "@angular/common": "^17 || ^18 || ^19 || ^20",
-    "@angular/compiler": "^17 || ^18 || ^19 || ^20",
-    "@angular/core": "^17 || ^18 || ^19 || ^20",
-    "@angular/forms": "^17 || ^18 || ^19 || ^20",
-    "@angular/platform-browser": "^17 || ^18 || ^19 || ^20",
-    "@angular/platform-browser-dynamic": "^17 || ^18 || ^19 || ^20",
-    "@angular/router": "^17 || ^18 || ^19 || ^20",
-    "rxjs": "^7.8.0 || ^8",
-    "tslib": "^2.3.0",
-    "zone.js": "^0.14.0",
+    "@angular/animations": "20.3.10",
+    "@angular/common": "20.3.10",
+    "@angular/compiler": "20.3.10",
+    "@angular/core": "20.3.10",
+    "@angular/forms": "20.3.10",
+    "@angular/platform-browser": "20.3.10",
+    "@angular/platform-browser-dynamic": "20.3.10",
+    "@angular/router": "20.3.10",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.14.10",
+    "sockjs-client": "^1.6.1",
     "@stomp/stompjs": "^7.0.0",
-    "sockjs-client": "^1.6.0",
-    "sweetalert2": "^11.10.0"
+    "sweetalert2": "^11.12.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17 || ^18 || ^19 || ^20",
-    "@angular/cli": "^17 || ^18 || ^19 || ^20",
-    "@angular/compiler-cli": "^17 || ^18 || ^19 || ^20",
-    "typescript": "^5.4.0"
+    "@angular/cli": "20.3.10",
+    "@angular/build": "20.3.10",
+    "@angular-devkit/build-angular": "20.3.10",
+    "typescript": "~5.5.4"
+  },
+  "overrides": {
+    "@angular/compiler": "20.3.10",
+    "@angular/compiler-cli": "20.3.10",
+    "@angular-devkit/build-angular": "20.3.10",
+    "@angular/build": "20.3.10"
   }
 }
