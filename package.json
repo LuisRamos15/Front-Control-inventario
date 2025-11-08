@@ -4,9 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o --proxy-config proxy.conf.json",
-    "build": "ng build",
+    "build": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
   },
   "prettier": {
     "printWidth": 100,
