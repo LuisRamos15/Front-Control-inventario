@@ -1,7 +1,7 @@
  import { Injectable, NgZone } from '@angular/core';
  import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 
- import { Subject, Observable } from 'rxjs';
+   import { Subject, Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 
@@ -34,19 +34,19 @@ if (this.client?.active) return;
 
 const wsUrl = environment.wsUrl;
 
-  this.client = new Client({
+ this.client = new Client({
 
-  webSocketFactory: () => new SockJS(wsUrl),
+ brokerURL: wsUrl,
 
-  reconnectDelay: 5000,
+ reconnectDelay: 5000,
 
-  heartbeatIncoming: 10000,
+ heartbeatIncoming: 10000,
 
-  heartbeatOutgoing: 10000,
+ heartbeatOutgoing: 10000,
 
-  debug: () => {}
+ debug: () => {}
 
-  });
+ });
 
 this.client.onConnect = () => {
 

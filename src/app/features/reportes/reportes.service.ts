@@ -35,7 +35,7 @@ export class ReportesService {
   }
 
   getProductos() {
-    return this.http.get<any[]>(`${environment.apiUrl}/productos`);
+    return this.http.get<any[]>(`${environment.apiBase}/api/productos`);
   }
 
   getMovimientosPorDia(params?: {desde?: string; hasta?: string}) {
