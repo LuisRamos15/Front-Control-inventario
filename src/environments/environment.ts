@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  // Usamos rutas relativas para aprovechar el proxy local (proxy.conf.json)
+  // En desarrollo usamos rutas relativas y el proxy.conf.json para redirigir a localhost:8080
   apiUrl: '/api',
   wsUrl: '/ws'
 };

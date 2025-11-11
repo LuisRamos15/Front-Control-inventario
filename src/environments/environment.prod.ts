@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  // Rutas relativas: Vercel las reescribe hacia Render según vercel.json
+  // En producción, las rutas relativas serán reescritas por vercel.json hacia Render
   apiUrl: '/api',
   wsUrl: '/ws'
 };
