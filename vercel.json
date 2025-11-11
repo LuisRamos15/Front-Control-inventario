@@ -8,9 +8,8 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "https://backend-control-inventario-desplegar.onrender.com/api/$1" },
-    { "src": "/ws/(.*)",  "dest": "https://backend-control-inventario-desplegar.onrender.com/ws/$1" },
     { "handle": "filesystem" },
+    { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

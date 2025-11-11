@@ -24,7 +24,7 @@ export class WebSocketService {
 
   constructor(private auth: AuthService, private toast: ToastService) {
       this.client = new Client({
-        brokerURL: environment.wsBase,
+        brokerURL: environment.wsUrl,
        debug: () => {},
        reconnectDelay: 5000,
        heartbeatIncoming: 4000,

@@ -13,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let request = req;
 
-  if (req.url.startsWith(environment.apiBase)) {
+  if (req.url.startsWith(environment.apiUrl)) {
     const token = auth.getToken();
     if (token) {
       request = req.clone({
